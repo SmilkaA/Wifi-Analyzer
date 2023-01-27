@@ -3,23 +3,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_access_points">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.wifi.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_access_points"
+        android:name="com.example.wifi.ui.access_points.AccessPointsFragment"
+        android:label="@string/menu_access_points"
+        tools:layout="@layout/fragment_access_points" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.wifi.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_channels_rate"
+        android:name="com.example.wifi.ui.channels_rate.ChannelsRateFragment"
+        android:label="@string/menu_channels_rate"
+        tools:layout="@layout/fragment_channel_rate" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.wifi.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_channels_graph"
+        android:name="com.example.wifi.ui.channels_graph.ChannelGraphFragment"
+        android:label="@string/menu_channel_graph"
+        tools:layout="@layout/fragment_channel_graph" />
+
+    <fragment
+        android:id="@+id/nav_time_graph"
+        android:name="com.example.wifi.ui.time_graph.TimeGraphFragment"
+        android:label="@string/menu_time_graph"
+        tools:layout="@layout/fragment_time_graph" />
+
+    <fragment
+        android:id="@+id/nav_export"
+        android:name="com.example.wifi.ui.export.ExportFragment"
+        android:label="@string/menu_export"
+        tools:layout="@layout/fragment_export" />
+
+    <fragment
+        android:id="@+id/nav_available_channels"
+        android:name="com.example.wifi.ui.available_channels.AvailableChannelsFragment"
+        android:label="@string/menu_available_channels"
+        tools:layout="@layout/fragment_available_channels" />
+
+    <fragment
+        android:id="@+id/nav_vendors"
+        android:name="com.example.wifi.ui.vendors.VendorsFragment"
+        android:label="@string/menu_vendors"
+        tools:layout="@layout/fragment_vendors" />
+
+    <fragment
+        android:id="@+id/nav_port_authority"
+        android:name="com.example.wifi.ui.port_authority.PortAuthorityFragment"
+        android:label="@string/menu_port_authority"
+        tools:layout="@layout/fragment_port_authority" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.wifi.ui.settings.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_about_app"
+        android:name="com.example.wifi.ui.about.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about_app" />
+
 </navigation>

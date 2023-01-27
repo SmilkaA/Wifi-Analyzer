@@ -1,13 +1,21 @@
 <resources>
-    <string name="app_name">wifi</string>
+    <string name="app_name">Wi-Fi Analuzer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">WIFI-Analyzer</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_filter">Filter</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_access_points">Access points</string>
+    <string name="menu_channels_rate">Channels rate</string>
+    <string name="menu_channel_graph">Channels graph</string>
+    <string name="menu_time_graph">Time graph</string>
+
+    <string name="menu_export">Export</string>
+    <string name="menu_available_channels">Available channels</string>
+    <string name="menu_vendors">Vendors</string>
+    <string name="menu_port_authority">Port authority</string>
+
+    <string name="menu_settings">Settings</string>
+    <string name="menu_about">About App</string>
 </resources>

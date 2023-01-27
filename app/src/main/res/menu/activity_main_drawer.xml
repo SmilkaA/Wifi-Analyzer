@@ -5,16 +5,44 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_access_points"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />
+            android:title="@string/menu_access_points" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_channels_rate"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:title="@string/menu_channels_rate" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_channels_graph"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:title="@string/menu_channel_graph" />
+        <item
+            android:id="@+id/nav_time_graph"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_time_graph" />
+        <item
+            android:id="@+id/nav_export"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_export" />
+        <item
+            android:id="@+id/nav_available_channels"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_available_channels" />
+        <item
+            android:id="@+id/nav_vendors"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_vendors" />
+        <item
+            android:id="@+id/nav_port_authority"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_port_authority" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_settings" />
+        <item
+            android:id="@+id/nav_about_app"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_about" />
     </group>
 </menu>
