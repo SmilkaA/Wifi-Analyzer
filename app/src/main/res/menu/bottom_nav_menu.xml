@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_access_points"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="@string/menu_access_points" />
+
+    <item
+        android:id="@+id/navigation_channels_rate"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="@string/menu_channels_rate" />
+
+    <item
+        android:id="@+id/navigation_channel_graph"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="@string/menu_channel_graph" />
+
+    <item
+        android:id="@+id/navigation_time_graph"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="@string/menu_time_graph" />
+
+</menu>
