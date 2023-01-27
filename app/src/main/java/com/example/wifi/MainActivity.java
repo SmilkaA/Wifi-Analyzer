@@ -28,7 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
+        initBottomNavigation();
+        initDrawerLayout();
+    }
 
+    private void initBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_access_points, R.id.navigation_channels_rate,
@@ -38,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
         NavController navController1 = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController1, appBarConfiguration);
         NavigationUI.setupWithNavController(bottomNavigationView, navController1);
+    }
 
+    private void initDrawerLayout() {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView drawerNavigationView = binding.navView;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
