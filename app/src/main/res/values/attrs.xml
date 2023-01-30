@@ -1,0 +1,11 @@
+<resources>
+    <declare-styleable name="AccessPointMainView">
+        <attr name="groupIndicatorView" format="reference" />
+        <attr name="securityImageView" format="reference" />
+        <attr name="ssidView" format="string" />
+        <attr name="levelView" format="string" />
+        <attr name="channelView" format="string" />
+        <attr name="primaryFrequencyView" format="string" />
+        <attr name="distanceView" format="string" />
+    </declare-styleable>
+</resources>

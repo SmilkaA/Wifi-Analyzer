@@ -9,29 +9,32 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.databinding.FragmentAccessPointsBinding;
 
-public class AccessPointsFragment extends Fragment {
+public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentAccessPointsBinding binding;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private AccessPoinAdapter accessPoinAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        AccessPointsViewModel accessPointsViewModel =
-                new ViewModelProvider(this).get(AccessPointsViewModel.class);
 
         binding = FragmentAccessPointsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        accessPointsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        return binding.getRoot();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onRefresh() {
+
     }
 }

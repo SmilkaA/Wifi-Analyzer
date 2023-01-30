@@ -47,4 +47,5 @@
     <string name="keep_screen_on_title">Keep screen on</string>
     <string name="country_title">Country</string>
     <string name="language_title">Language</string>
+    <string name="channel_short">CH</string>
 </resources>

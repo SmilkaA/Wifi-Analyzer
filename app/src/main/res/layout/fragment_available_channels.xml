@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.access_points.AccessPointsFragment">
 
+    <com.example.wifi.ui.access_points.AccessPointMainView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:primaryFrequencyView="123"
+        app:ssidView="1233" />
+
     <TextView
         android:id="@+id/text_home"
         android:layout_width="match_parent"
