@@ -28,7 +28,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     private MainActivity mainActivity;
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         mainActivity = (MainActivity) activity;
     }

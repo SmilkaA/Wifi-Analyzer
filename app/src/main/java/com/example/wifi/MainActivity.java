@@ -9,11 +9,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -38,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private static WifiManager wifi;
+    private WifiManager wifi;
     private BroadcastReceiver wifiScanReceiver;
-    private static ArrayList<ScanResult> scanResultsList;
+    private List<ScanResult> scanResultsList;
     private final static String[] permissions = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -48,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CHANGE_WIFI_STATE
     };
 
-    private boolean wlanEnabledByApp;
     private boolean scanTimerIsRunning = false;
     private long lastScanResultReceivedTime = 0;
 
@@ -110,16 +106,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void receiveScanResults() {
-        List<ScanResult> scanResults = null;
-        scanResults = wifi.getScanResults();
-        scanResultsList.clear();
+        List<ScanResult> scanResults = wifi.getScanResults();
 
         for (ScanResult sr : scanResults) {
-            if (android.os.Build.VERSION.SDK_INT >= 17) {
-                long age = ((SystemClock.elapsedRealtime() * 1000) - sr.timestamp) / 1000000;
-                if (age > 35) {
-                    continue;
-                }
+            long age = ((SystemClock.elapsedRealtime() * 1000) - sr.timestamp) / 1000000;
+            if (age > 35) {
+                continue;
             }
             scanResultsList.add(sr);
         }
@@ -128,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestScan() {
-        setWLANEnabled(true);
+        setWLANEnabled();
         SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
         float scanDelay = sharedPrefs.getFloat("PREF_SETTING_SCAN_DELAY", getDefaultScanDelay());
         long delay = (long) Math.max(0, scanDelay - (System.currentTimeMillis() - lastScanResultReceivedTime));
@@ -150,27 +142,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setWLANEnabled(boolean enable) {
-        if (enable && wifi.isWifiEnabled() == false) {
-            showToast("Enabling WLAN...");
+    private void setWLANEnabled() {
+        if (!wifi.isWifiEnabled()) {
+            Toast.makeText(this, "Enabling WLAN...", Toast.LENGTH_SHORT).show();
             wifi.setWifiEnabled(true);
-            wlanEnabledByApp = true;
-        } else if (!enable && wifi.isWifiEnabled() && wlanEnabledByApp) {
-            showToast("Disabling WLAN...");
-            wifi.setWifiEnabled(false);
-            wlanEnabledByApp = false;
         }
     }
 
-    public void showToast(String text) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 180);
-        toast.show();
-    }
-
-
     public void handlePermissions() {
-        if (android.os.Build.VERSION.SDK_INT < 23) {
+        if (android.os.Build.VERSION.SDK_INT < 25) {
             return;
         }
 
@@ -180,18 +160,15 @@ public class MainActivity extends AppCompatActivity {
                 permissionsToRequest.add(p);
             }
         }
-        //requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]));
-    }
 
-    public void requestPermissions(String[] permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissions, 111);
+        if (!permissionsToRequest.isEmpty()) {
+            requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()])
+                    , 111);
         }
     }
 
-    public ArrayList<ScanResult> getData() {
+    public List<ScanResult> getData() {
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        scanResultsList = new ArrayList<>();
         wifiScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
@@ -201,8 +178,7 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         requestScan();
         handlePermissions();
-        Toast.makeText(getApplicationContext(), scanResultsList.toString(), Toast.LENGTH_LONG).show();
+        scanResultsList = wifi.getScanResults();
         return scanResultsList;
     }
-
 }
