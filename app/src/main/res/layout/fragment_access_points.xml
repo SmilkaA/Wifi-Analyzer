@@ -18,7 +18,7 @@
             app:primaryFrequencyView="123"
             app:ssidView="1233" />
 
-        <ExpandableListView
+        <ListView
             android:id="@+id/accessPointsView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
