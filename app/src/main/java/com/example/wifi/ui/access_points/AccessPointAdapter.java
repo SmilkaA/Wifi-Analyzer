@@ -6,18 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.wifi.R;
-import com.example.wifi.data.WiFiData;
 
 import java.util.ArrayList;
 
 public class AccessPointAdapter extends BaseAdapter {
     private Context context;
-    private ListView ListView;
     private ArrayList<ScanResult> data;
     private static LayoutInflater inflater = null;
 
@@ -51,9 +47,9 @@ public class AccessPointAdapter extends BaseAdapter {
         }
 
         ScanResult itemData = data.get(i);
-//TODO ass more fields
+//TODO add more fields
         // ssid
-        TextView ssidItem = (TextView) view.findViewById(R.id.ssid);
+        TextView ssidItem = view.findViewById(R.id.ssid);
         ssidItem.setText(itemData.SSID);
         return view;
     }

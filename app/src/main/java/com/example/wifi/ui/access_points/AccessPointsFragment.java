@@ -2,9 +2,7 @@ package com.example.wifi.ui.access_points;
 
 import android.app.Activity;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +26,6 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     private ArrayList<ScanResult> scanResultList;
     private AccessPointAdapter accessPointAdapter;
     private MainActivity mainActivity;
-    private WifiManager wifiManager;
 
     @Override
     public void onAttach(Activity activity) {
@@ -42,7 +39,8 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         binding = FragmentAccessPointsBinding.inflate(inflater, container, false);
         wifiListView = binding.accessPointsView;
         swipeRefreshLayout = binding.accessPointsRefresh;
-        scanResultList = new ArrayList<ScanResult>();
+        swipeRefreshLayout.setOnRefreshListener(this);
+        scanResultList = new ArrayList<>();
         accessPointAdapter = new AccessPointAdapter(getActivity(), scanResultList);
         wifiListView.setAdapter(accessPointAdapter);
 
@@ -59,13 +57,15 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
         updateWiFiList();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void updateWiFiList() {
         List<ScanResult> scanResults = mainActivity.getData();
         scanResultList.clear();
-        //scanResultList.addAll(scanResults);
+        scanResultList.addAll(scanResults);
         accessPointAdapter.notifyDataSetChanged();
     }
 }

@@ -14,7 +14,7 @@
 
         <com.example.wifi.ui.access_points.AccessPointMainView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:primaryFrequencyView="123"
             app:ssidView="1233" />
 

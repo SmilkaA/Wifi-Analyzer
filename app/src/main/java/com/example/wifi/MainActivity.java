@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private static WifiManager wifi;
     private BroadcastReceiver wifiScanReceiver;
-    private ArrayList<ScanResult> scanResultsList;
+    private static ArrayList<ScanResult> scanResultsList;
     private final static String[] permissions = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -61,85 +61,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         initBottomNavigation();
         initDrawerLayout();
-
-        wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        scanResultsList = new ArrayList<>();
-        wifiScanReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context c, Intent intent) {
-                receiveScanResults();
-            }
-        };
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context c, Intent intent) {
-                receiveScanResults();
-            }
-        }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        requestScan();
-        handlePermissions();
-    }
-
-    private void receiveScanResults() {
-
-        List<ScanResult> scanResults = null;
-        scanResults = wifi.getScanResults();
-        scanResultsList.clear();
-
-        for (ScanResult sr : scanResults) {
-            if (android.os.Build.VERSION.SDK_INT >= 17) {
-                long age = ((SystemClock.elapsedRealtime() * 1000) - sr.timestamp) / 1000000;
-                // if the wlan was last seen more than MAX_SCAN_RESULT_AGE seconds ago, do not add it to the list
-                if (age > 35) {
-                    continue;
-                }
-            }
-            scanResultsList.add(sr);
-        }
-        lastScanResultReceivedTime = System.currentTimeMillis();
-        requestScan();
-    }
-
-    private void requestScan() {
-        setWLANEnabled(true);
-        SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
-        float scanDelay = sharedPrefs.getFloat("PREF_SETTING_SCAN_DELAY", getDefaultScanDelay());
-        long delay = (long) Math.max(0, scanDelay - (System.currentTimeMillis() - lastScanResultReceivedTime));
-        scanTimerIsRunning = true;
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                scanTimerIsRunning = false;
-                wifi.startScan();
-            }
-        }, delay);
-    }
-
-    public static int getDefaultScanDelay() {
-        if (android.os.Build.VERSION.SDK_INT >= 28) {
-            // since android 9 each foreground app can scan four times in a 2-minute period
-            return 30500;
-        } else {
-            return 500;
-        }
-    }
-
-    private void setWLANEnabled(boolean enable) {
-        if (enable && wifi.isWifiEnabled() == false) {
-            showToast("Enabling WLAN...");
-            wifi.setWifiEnabled(true);
-            wlanEnabledByApp = true;
-        } else if (!enable && wifi.isWifiEnabled() && wlanEnabledByApp) {
-            showToast("Disabling WLAN...");
-            wifi.setWifiEnabled(false);
-            wlanEnabledByApp = false;
-        }
-    }
-
-    public void showToast(String text) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 180);
-        toast.show();
     }
 
     private void initBottomNavigation() {
@@ -169,26 +90,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(drawerNavigationView, navController);
     }
 
-    public void handlePermissions() {
-        if (android.os.Build.VERSION.SDK_INT < 23) {
-            return;
-        }
-
-        List<String> permissionsToRequest = new ArrayList<String>();
-
-        for (int i = 0; i < permissions.length; i++) {
-            String p = permissions[i];
-            if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(p);
-            }
-        }
-    }
-    public void requestPermissions(String[] permissions) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissions, 111);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -208,7 +109,99 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(wifiScanReceiver);
     }
 
+    private void receiveScanResults() {
+        List<ScanResult> scanResults = null;
+        scanResults = wifi.getScanResults();
+        scanResultsList.clear();
+
+        for (ScanResult sr : scanResults) {
+            if (android.os.Build.VERSION.SDK_INT >= 17) {
+                long age = ((SystemClock.elapsedRealtime() * 1000) - sr.timestamp) / 1000000;
+                if (age > 35) {
+                    continue;
+                }
+            }
+            scanResultsList.add(sr);
+        }
+        lastScanResultReceivedTime = System.currentTimeMillis();
+        requestScan();
+    }
+
+    private void requestScan() {
+        setWLANEnabled(true);
+        SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
+        float scanDelay = sharedPrefs.getFloat("PREF_SETTING_SCAN_DELAY", getDefaultScanDelay());
+        long delay = (long) Math.max(0, scanDelay - (System.currentTimeMillis() - lastScanResultReceivedTime));
+        scanTimerIsRunning = true;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                scanTimerIsRunning = false;
+                wifi.startScan();
+            }
+        }, delay);
+    }
+
+    public static int getDefaultScanDelay() {
+        if (android.os.Build.VERSION.SDK_INT >= 28) {
+            return 30500;
+        } else {
+            return 500;
+        }
+    }
+
+    private void setWLANEnabled(boolean enable) {
+        if (enable && wifi.isWifiEnabled() == false) {
+            showToast("Enabling WLAN...");
+            wifi.setWifiEnabled(true);
+            wlanEnabledByApp = true;
+        } else if (!enable && wifi.isWifiEnabled() && wlanEnabledByApp) {
+            showToast("Disabling WLAN...");
+            wifi.setWifiEnabled(false);
+            wlanEnabledByApp = false;
+        }
+    }
+
+    public void showToast(String text) {
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 180);
+        toast.show();
+    }
+
+
+    public void handlePermissions() {
+        if (android.os.Build.VERSION.SDK_INT < 23) {
+            return;
+        }
+
+        List<String> permissionsToRequest = new ArrayList<>();
+        for (String p : permissions) {
+            if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(p);
+            }
+        }
+        //requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]));
+    }
+
+    public void requestPermissions(String[] permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(permissions, 111);
+        }
+    }
+
     public ArrayList<ScanResult> getData() {
+        wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        scanResultsList = new ArrayList<>();
+        wifiScanReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, Intent intent) {
+                receiveScanResults();
+            }
+        };
+        registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        requestScan();
+        handlePermissions();
+        Toast.makeText(getApplicationContext(), scanResultsList.toString(), Toast.LENGTH_LONG).show();
         return scanResultsList;
     }
 
