@@ -1,4 +1,4 @@
-<h1>WiFi Analyzer <img src="images/icon.png" alt="Application Icon" width="40" height="40"></h1>
+<h1>WiFi Analyzer</h1>
 
 ## Table of Contents
 - [Features](#features)
