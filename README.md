@@ -22,8 +22,8 @@
 * The application has too many features to mention them all
 
 ## Work Breakdown Structure
-    You cah find Work Breakdown Structure [here](https://drive.google.com/file/d/1pziO0hfzvgrHEccnd8DyNU24HiQWRrpb/view?usp=share_link)
+*You cah find Work Breakdown Structure [here](https://drive.google.com/file/d/1pziO0hfzvgrHEccnd8DyNU24HiQWRrpb/view?usp=share_link)
 
 ## Application Screen-flow
-    You cah find Application Screen-flow [here](https://www.figma.com/file/MIqqCyxyfj3GDR2Olphzbo/Diagram---Untitled?node-id=0%3A1)
+*You cah find Application Screen-flow [here](https://www.figma.com/file/MIqqCyxyfj3GDR2Olphzbo/Diagram---Untitled?node-id=0%3A1)
 
