@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     private void requestScan() {
         setWLANEnabled();
         SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
-        float scanDelay = sharedPrefs.getFloat("PREF_SETTING_SCAN_DELAY", getDefaultScanDelay());
+        float scanDelay = sharedPrefs.getFloat(Utils.PREF_SETTING_SCAN_DELAY, getDefaultScanDelay());
         long delay = (long) Math.max(0, scanDelay - (System.currentTimeMillis() - lastScanResultReceivedTime));
         scanTimerIsRunning = true;
         new Timer().schedule(new TimerTask() {

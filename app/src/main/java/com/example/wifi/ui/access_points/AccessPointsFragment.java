@@ -37,10 +37,12 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentAccessPointsBinding.inflate(inflater, container, false);
-        wifiListView = binding.accessPointsView;
+
         swipeRefreshLayout = binding.accessPointsRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
         scanResultList = new ArrayList<>();
+
+        wifiListView = binding.accessPointsView;
         accessPointAdapter = new AccessPointAdapter(getActivity(), scanResultList);
         wifiListView.setAdapter(accessPointAdapter);
 

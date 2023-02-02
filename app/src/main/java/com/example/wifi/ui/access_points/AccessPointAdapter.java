@@ -1,16 +1,26 @@
 package com.example.wifi.ui.access_points;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.ScanResult;
+import android.os.Build;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+
 import com.example.wifi.R;
+import com.example.wifi.Utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class AccessPointAdapter extends BaseAdapter {
     private Context context;
@@ -39,6 +49,8 @@ public class AccessPointAdapter extends BaseAdapter {
         return i;
     }
 
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view = convertView;
@@ -47,10 +59,60 @@ public class AccessPointAdapter extends BaseAdapter {
         }
 
         ScanResult itemData = data.get(i);
-//TODO add more fields
-        // ssid
-        TextView ssidItem = view.findViewById(R.id.ssid);
-        ssidItem.setText(itemData.SSID);
+        TextView ssidItem = view.findViewById(R.id.ssid_in_detailed);
+        ssidItem.setText(itemData.SSID + " (" + itemData.BSSID + ")");
+
+        TextView levelItem = view.findViewById(R.id.level_in_detailed);
+        levelItem.setText(context.getString(R.string.level_value, String.valueOf(itemData.level)));
+
+        TextView channelWidthItem = view.findViewById(R.id.width_in_detailed);
+        channelWidthItem.setText(Utils.getChannelWidth(itemData) + " MHz");
+
+        TextView channelItem = view.findViewById(R.id.channel_in_detailed);
+        String channel = "";
+        int[] frequencies = Utils.getFrequencies(itemData);
+        if (frequencies.length == 1) {
+            channel = String.valueOf(Utils.getChannel(frequencies[0]));
+        } else if (frequencies.length == 2) {
+            channel = Utils.getChannel(frequencies[0]) + "+" + Utils.getChannel(frequencies[1]);
+        }
+        channelItem.setText(channel);
+        channelItem.setX(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 190, viewGroup.getResources().getDisplayMetrics()));
+
+        TextView vendorItem = view.findViewById(R.id.vendorShort_in_detailed);
+        vendorItem.setText(itemData.BSSID);
+
+        TextView capabilitiesItem = view.findViewById(R.id.capabilities_in_detailed);
+        capabilitiesItem.setText(itemData.capabilities);
+
+        TextView frequencyItem = view.findViewById(R.id.primaryFrequency_in_detailed);
+        TextView frequencyRangeItem = view.findViewById(R.id.channel_frequency_range_in_detailed);
+        Utils.FrequencyBand fBand = Utils.getFrequencyBand(itemData);
+        String frequencyItemText = "";
+        String frequencyRangeItemText = "";
+        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
+            frequencyItemText = "2.4";
+            int frequency = 2412 + ((Integer.parseInt(channel) - 1) * 5);
+            if (!channel.equals("1")) {
+                frequencyRangeItemText = (frequency - 20) + " - " + (frequency + 20);
+            } else {
+                frequencyRangeItemText = (frequency - 10) + " - " + (frequency + 10);
+            }
+        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ) {
+            frequencyItemText = "5";
+            frequencyRangeItemText = " - ";
+        } else if (fBand == Utils.FrequencyBand.SIX_GHZ) {
+            frequencyItemText = "6";
+            frequencyRangeItemText = " - ";
+        }
+        frequencyItem.setText(frequencyItemText + " GHz");
+        frequencyRangeItem.setText(frequencyRangeItemText);
+
+        TextView distanceItem = view.findViewById(R.id.distan_in_detailedce);
+        double exp = (27.55 - (20 * Math.log10(Double.parseDouble(frequencyItemText))) + Math.abs(itemData.level)) / 20.0;
+        double distanceM = Math.pow(10.0, exp);
+        distanceItem.setText("~" + String.valueOf(distanceM/1000).substring(0,5)+"m");
+
         return view;
     }
 }

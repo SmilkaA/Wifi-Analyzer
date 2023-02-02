@@ -91,5 +91,11 @@
                 tools:text="~999.9m" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/purple_200" />
     </LinearLayout>
 </LinearLayout>

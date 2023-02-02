@@ -12,17 +12,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.example.wifi.ui.access_points.AccessPointMainView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:primaryFrequencyView="123"
-            app:ssidView="1233" />
-
-        <ListView
-            android:id="@+id/accessPointsView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:groupIndicator="@null" />
+            android:orientation="vertical">
+
+            <com.example.wifi.ui.access_points.AccessPointMainView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:primaryFrequencyView="123"
+                app:ssidView="1233" />
+
+            <ListView
+                android:id="@+id/accessPointsView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:groupIndicator="@null" />
+        </LinearLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>
