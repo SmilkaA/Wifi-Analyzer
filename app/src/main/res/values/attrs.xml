@@ -7,5 +7,7 @@
         <attr name="channelView" format="string" />
         <attr name="primaryFrequencyView" format="string" />
         <attr name="distanceView" format="string" />
+        <attr name="speedView" format="string" />
+        <attr name="IPView" format="string" />
     </declare-styleable>
 </resources>

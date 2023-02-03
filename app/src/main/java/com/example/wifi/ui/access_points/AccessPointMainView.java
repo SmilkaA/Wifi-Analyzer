@@ -23,7 +23,8 @@ public class AccessPointMainView extends LinearLayout {
     private TextView primaryFrequencyView;
     private ImageView securityImageView;
     private TextView distanceView;
-
+    private TextView speedView;
+    private TextView IPView;
 
     public AccessPointMainView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,6 +38,8 @@ public class AccessPointMainView extends LinearLayout {
         primaryFrequencyView = findViewById(R.id.primaryFrequency);
         securityImageView = findViewById(R.id.securityImage);
         distanceView = findViewById(R.id.distance);
+        speedView = findViewById(R.id.speed);
+        IPView = findViewById(R.id.ip_address);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AccessPointMainView);
         try {
@@ -47,6 +50,8 @@ public class AccessPointMainView extends LinearLayout {
             String primaryFrequencyText = typedArray.getString(R.styleable.AccessPointMainView_primaryFrequencyView);
             Drawable securityImage = typedArray.getDrawable(R.styleable.AccessPointMainView_securityImageView);
             String distanceText = typedArray.getString(R.styleable.AccessPointMainView_distanceView);
+            String speedText = typedArray.getString(R.styleable.AccessPointMainView_speedView);
+            String IPText = typedArray.getString(R.styleable.AccessPointMainView_IPView);
 
             groupIndicatorView.setImageDrawable(groupIndicatorImage);
             ssidView.setText(ssidText);
@@ -55,6 +60,8 @@ public class AccessPointMainView extends LinearLayout {
             primaryFrequencyView.setText(primaryFrequencyText);
             securityImageView.setImageDrawable(securityImage);
             distanceView.setText(distanceText);
+            speedView.setText(speedText);
+            IPView.setText(IPText);
 
         } finally {
             typedArray.recycle();
@@ -95,5 +102,13 @@ public class AccessPointMainView extends LinearLayout {
 
     public void setDistanceView(String distanceView) {
         this.distanceView.setText(distanceView);
+    }
+
+    public void setSpeedView(String speedView) {
+        this.speedView.setText(speedView);
+    }
+
+    public void setIPView(String IPView) {
+        this.IPView.setText(IPView);
     }
 }
