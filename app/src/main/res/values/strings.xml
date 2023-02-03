@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Wi-Fi Analyzer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -49,4 +49,8 @@
     <string name="language_title">Language</string>
     <string name="channel_short">CH</string>
     <string name="level_value">%1$s dBm</string>
+    <string name="best_channels">Best Channels:</string>
+    <string name="channel_rating_heading_rating">Channel Rating</string>
+    <string name="channel_rating_heading_number">Channel number</string>
+    <string name="channel_rating_heading_count">Access Point Count</string>
 </resources>
