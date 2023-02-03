@@ -1,13 +1,10 @@
 package com.example.wifi.ui.channels_rate;
 
 import android.app.Activity;
-import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,10 +13,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
 import com.example.wifi.databinding.FragmentChannelRateBinding;
-import com.example.wifi.ui.access_points.AccessPointAdapter;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 
-import java.util.ArrayList;
 
 public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -33,7 +28,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         super.onAttach(activity);
         mainActivity = (MainActivity) activity;
     }
-    
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         ChannelsRateViewModel channelsRateViewModel =
@@ -45,7 +40,9 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this);
 
         accessPointMainView = binding.channelRateMainAccessPoint;
+        accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+
         return binding.getRoot();
     }
 

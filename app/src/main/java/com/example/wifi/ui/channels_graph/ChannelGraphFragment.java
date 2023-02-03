@@ -39,6 +39,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this);
 
         accessPointMainView = binding.channelGraphAccessPoint;
+        accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         return binding.getRoot();

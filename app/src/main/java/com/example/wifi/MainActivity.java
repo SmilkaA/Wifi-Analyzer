@@ -13,12 +13,14 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -213,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 double exp = (27.55 - (20 * Math.log10(Double.parseDouble(frequencyItemText))) + Math.abs(result.level)) / 20.0;
                 double distanceM = Math.pow(10.0, exp);
                 accessPointMainView.setDistanceView("~" + String.valueOf(distanceM / 1000).substring(0, 5) + "m");
+                accessPointMainView.setVisibility(View.VISIBLE);
                 break;
             }
         }

@@ -39,6 +39,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         swipeRefreshLayout.setOnRefreshListener(this);
 
         accessPointMainView = binding.timeGraphAccessPoint;
+        accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         return binding.getRoot();
