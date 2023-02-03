@@ -111,6 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
                         android:textStyle="bold"
+                        android:textColor="#36EFFF"
                         tools:text="140(150)" />
 
                     <TextView
@@ -118,14 +119,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        tools:text="5750MHz" />
+                        tools:text="5750MHz"
+                        android:textColor="@color/purple_500"/>
 
                     <TextView
                         android:id="@+id/distan_in_detailedce"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        tools:text="~999.9m" />
+                        tools:text="~999.9m"
+                        android:textColor="@color/teal_700"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -138,13 +141,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        tools:text="5700-5800" />
+                        tools:text="5700-5800"
+                        android:textColor="@color/purple_500"/>
                     <TextView
                         android:id="@+id/width_in_detailed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        tools:text="(160MHz)" />
+                        tools:text="(160MHz)"
+                        android:textColor="@color/purple_500" />
 
                     <TextView
                         android:id="@+id/vendorShort_in_detailed"
