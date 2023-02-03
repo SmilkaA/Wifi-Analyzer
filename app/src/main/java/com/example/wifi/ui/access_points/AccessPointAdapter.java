@@ -75,11 +75,11 @@ public class AccessPointAdapter extends BaseAdapter {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_4_bar", null, context.getPackageName()));
             picture.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.GREEN);
-        } else if (itemData.level > -50) {
+        } else if (itemData.level > -55) {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_3_bar", null, context.getPackageName()));
             picture.setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.YELLOW);
-        } else if (itemData.level > -75) {
+        } else if (itemData.level > -80) {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_2_bar", null, context.getPackageName()));
             picture.setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.YELLOW);
@@ -106,7 +106,6 @@ public class AccessPointAdapter extends BaseAdapter {
             channel = Utils.getChannel(frequencies[0]) + "+" + Utils.getChannel(frequencies[1]);
         }
         channelItem.setText(channel);
-        channelItem.setX(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 190, viewGroup.getResources().getDisplayMetrics()));
 
         TextView vendorItem = view.findViewById(R.id.vendorShort_in_detailed);
         vendorItem.setText(itemData.BSSID);

@@ -6,23 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.channels_graph.ChannelGraphFragment">
 
-    <com.example.wifi.ui.access_points.AccessPointMainView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/channelGraphRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:primaryFrequencyView="123"
-        app:ssidView="1233" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_slideshow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.example.wifi.ui.access_points.AccessPointMainView
+            android:id="@+id/channelGraphAccessPoint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

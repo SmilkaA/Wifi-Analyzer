@@ -8,12 +8,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -180,5 +182,40 @@ public class MainActivity extends AppCompatActivity {
         handlePermissions();
         scanResultsList = wifi.getScanResults();
         return scanResultsList;
+    }
+
+    public void fillCurrentlyConnectedAccessPoint(AccessPointMainView accessPointMainView) {
+        wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifi.getConnectionInfo();
+        List<ScanResult> scanResults = getData();
+        for (ScanResult result : scanResults) {
+            if(info.getSSID().replace("\"","").equals(result.SSID)){
+                accessPointMainView.setSsidView(result.SSID+" (" + result.BSSID + ")");
+               accessPointMainView.setLevelView( String.valueOf(result.level));
+                String channel = "";
+                int[] frequencies = Utils.getFrequencies(result);
+                if (frequencies.length == 1) {
+                    channel = String.valueOf(Utils.getChannel(frequencies[0]));
+                } else if (frequencies.length == 2) {
+                    channel = Utils.getChannel(frequencies[0]) + "+" + Utils.getChannel(frequencies[1]);
+                }
+                accessPointMainView.setChannelView(channel);
+               accessPointMainView.setPrimaryFrequencyView(Utils.getChannelWidth(result) + " MHz");
+                Utils.FrequencyBand fBand = Utils.getFrequencyBand(result);
+                String frequencyItemText = "";
+                if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
+                    frequencyItemText = "2.4";
+                } else if (fBand == Utils.FrequencyBand.FIVE_GHZ) {
+                    frequencyItemText = "5";
+                } else if (fBand == Utils.FrequencyBand.SIX_GHZ) {
+                    frequencyItemText = "6";
+                }
+                double exp = (27.55 - (20 * Math.log10(Double.parseDouble(frequencyItemText))) + Math.abs(result.level)) / 20.0;
+                double distanceM = Math.pow(10.0, exp);
+                accessPointMainView.setDistanceView("~" + String.valueOf(distanceM / 1000).substring(0, 5) + "m");
+                break;
+            }
+        }
+
     }
 }

@@ -2,6 +2,8 @@ package com.example.wifi.ui.access_points;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -60,4 +62,38 @@ public class AccessPointMainView extends LinearLayout {
 
     }
 
+    public void setSsidView(String ssidView) {
+        this.ssidView.setText(ssidView);
+    }
+
+    public void setLevelView(String level) {
+        this.levelView.setText(getResources().getString(R.string.level_value, level));
+        if (Integer.parseInt(level) > -35) {
+            this.levelView.setTextColor(Color.GREEN);
+        } else if (Integer.parseInt(level) > -55) {
+            this.levelView.setTextColor(Color.YELLOW);
+        } else if (Integer.parseInt(level) > -80) {
+            this.levelView.setTextColor(Color.YELLOW);
+        } else if (Integer.parseInt(level) > -90) {
+            this.levelView.setTextColor(Color.RED);
+        } else {
+            this.levelView.setTextColor(Color.RED);
+        }
+    }
+
+    public void setChannelView(String channelView) {
+        this.channelView.setText(channelView);
+    }
+
+    public void setPrimaryFrequencyView(String primaryFrequencyView) {
+        this.primaryFrequencyView.setText(primaryFrequencyView);
+    }
+
+    public void setSecurityImageView(ImageView securityImageView) {
+        this.securityImageView = securityImageView;
+    }
+
+    public void setDistanceView(String distanceView) {
+        this.distanceView.setText(distanceView);
+    }
 }

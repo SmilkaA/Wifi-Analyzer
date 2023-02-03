@@ -25,6 +25,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<ScanResult> scanResultList;
     private AccessPointAdapter accessPointAdapter;
+    private AccessPointMainView accessPointMainView;
     private MainActivity mainActivity;
 
     @Override
@@ -46,6 +47,9 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         accessPointAdapter = new AccessPointAdapter(getActivity(), scanResultList);
         wifiListView.setAdapter(accessPointAdapter);
 
+        accessPointMainView = binding.viewOfCurrentlyConnectedWifi;
+        mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+
         updateWiFiList();
 
         return binding.getRoot();
@@ -61,6 +65,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
         updateWiFiList();
+        mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
         swipeRefreshLayout.setRefreshing(false);
     }
 
