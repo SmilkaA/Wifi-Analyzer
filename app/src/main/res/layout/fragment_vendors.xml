@@ -14,7 +14,7 @@
         android:queryHint="00:0C:41 CISCO" />
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/vendorsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
