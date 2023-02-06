@@ -1,10 +1,12 @@
 package com.example.wifi.ui.vendors;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,9 +29,25 @@ public class VendorsFragment extends Fragment {
                 new ViewModelProvider(this).get(VendorsViewModel.class);
 
         binding = FragmentVendorsBinding.inflate(inflater, container, false);
+
         vendorsListView = binding.vendorsList;
         vendorsAdapter = new VendorsAdapter(getActivity(), vendorList);
         vendorsListView.setAdapter(vendorsAdapter);
+
+        binding.vendorSearchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchText) {
+                vendorsAdapter.updateAdapter(searchText);
+                vendorsAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
         return binding.getRoot();
     }
 

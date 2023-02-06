@@ -2,9 +2,7 @@ package com.example.wifi.ui.vendors;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.net.wifi.ScanResult;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +18,18 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class VendorsAdapter extends BaseAdapter {
     private List<VendorModel> vendorList;
+    private List<VendorModel> vendorListAllData;
     private Context context;
     private static LayoutInflater inflater = null;
 
     public VendorsAdapter(Context context, List<VendorModel> vendorList) {
         this.vendorList = readFile(context);
         this.context = context;
+        this.vendorListAllData = readFile(context);
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -93,5 +94,28 @@ public class VendorsAdapter extends BaseAdapter {
         } catch (IOException ignored) {
         }
         return vendors;
+    }
+
+    public void updateAdapter(String searchText) {
+        String filter = searchText.toUpperCase(Locale.ROOT);
+        if (filter.isEmpty()) {
+            this.vendorList.clear();
+            this.vendorList.addAll(this.vendorListAllData);
+        } else {
+            List<VendorModel> filteredList = new ArrayList<>();
+            for (VendorModel vendor : this.vendorList) {
+                if (vendor.getVendorName().contains(filter.toUpperCase(Locale.ROOT))) {
+                    filteredList.add(vendor);
+                }
+                for (String address : vendor.getMacAddresses()) {
+                    if (address.contains(filter.toLowerCase(Locale.ROOT))) {
+                        filteredList.add(vendor);
+                    }
+                }
+            }
+
+            this.vendorList.clear();
+            this.vendorList.addAll(filteredList);
+        }
     }
 }
