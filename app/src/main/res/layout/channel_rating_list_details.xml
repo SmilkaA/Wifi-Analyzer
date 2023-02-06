@@ -9,15 +9,16 @@
         android:id="@+id/channelRating"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:layout_weight="1"
-        android:stepSize="1.0" />
+        android:stepSize="1.0"
+        android:progressTint="#64DD17"/>
 
     <TextView
         android:id="@+id/channelNumber"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_weight="1.75"
@@ -27,7 +28,7 @@
     <TextView
         android:id="@+id/accessPointCount"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1.75"
         android:textColor="@color/purple_700"
         android:textStyle="bold" />

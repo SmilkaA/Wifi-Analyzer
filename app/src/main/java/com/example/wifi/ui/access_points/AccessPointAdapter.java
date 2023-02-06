@@ -7,7 +7,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.os.Build;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +20,6 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class AccessPointAdapter extends BaseAdapter {
     private Context context;
@@ -53,7 +48,7 @@ public class AccessPointAdapter extends BaseAdapter {
         return i;
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {

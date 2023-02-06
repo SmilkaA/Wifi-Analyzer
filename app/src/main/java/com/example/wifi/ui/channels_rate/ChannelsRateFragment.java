@@ -52,6 +52,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         channelsRatingList = binding.channelRatingList;
         scanResultList = new ArrayList<>();
         channelRateAdapter = new ChannelRateAdapter(getActivity(), scanResultList);
+        channelsRatingList.setAdapter(channelRateAdapter);
 
         return binding.getRoot();
     }

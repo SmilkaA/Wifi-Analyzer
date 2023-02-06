@@ -1,14 +1,19 @@
 package com.example.wifi.ui.channels_rate;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.wifi.R;
+import com.example.wifi.Utils;
 
 import java.util.ArrayList;
 
@@ -47,8 +52,14 @@ public class ChannelRateAdapter extends BaseAdapter {
         }
 
         ScanResult itemData = data.get(i);
-        
-
+        Object[] channels24ghz = Utils.CHANNELS_24GHZ_BAND.values().toArray();
+        RatingBar ratingBarItem = view.findViewById(R.id.channelRating);
+        ratingBarItem.setRating(4F);
+        ratingBarItem.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+        TextView channelNumberItem = view.findViewById(R.id.channelNumber);
+        channelNumberItem.setText(itemData.SSID);
+        TextView accessPointCountItem = view.findViewById(R.id.accessPointCount);
+        accessPointCountItem.setText(itemData.SSID);
         return view;
     }
 }
