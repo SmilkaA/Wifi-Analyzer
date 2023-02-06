@@ -1,7 +1,6 @@
 package com.example.wifi.ui.vendors;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wifi.databinding.FragmentVendorsBinding;
 
@@ -25,9 +23,6 @@ public class VendorsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        VendorsViewModel vendorsViewModel =
-                new ViewModelProvider(this).get(VendorsViewModel.class);
-
         binding = FragmentVendorsBinding.inflate(inflater, container, false);
 
         vendorsListView = binding.vendorsList;

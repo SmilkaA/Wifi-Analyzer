@@ -7,7 +7,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.os.Build;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,12 @@ import androidx.annotation.RequiresApi;
 
 import com.example.wifi.R;
 import com.example.wifi.Utils;
+import com.example.wifi.ui.vendors.VendorModel;
+import com.example.wifi.ui.vendors.VendorsAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 public class AccessPointAdapter extends BaseAdapter {
     private Context context;
@@ -108,7 +107,15 @@ public class AccessPointAdapter extends BaseAdapter {
         channelItem.setText(channel);
 
         TextView vendorItem = view.findViewById(R.id.vendorShort_in_detailed);
-        vendorItem.setText(itemData.BSSID);
+        List<VendorModel> vendorList = VendorsAdapter.readFile(context);
+        String macAddress = itemData.BSSID;
+        for (VendorModel vendor : vendorList) {
+            for (String address : vendor.getMacAddresses()) {
+                if (address.contains(macAddress.replace(":", "").substring(0, 6).toLowerCase(Locale.ROOT))) {
+                    vendorItem.setText(vendor.getVendorName());
+                }
+            }
+        }
 
         TextView capabilitiesItem = view.findViewById(R.id.capabilities_in_detailed);
         capabilitiesItem.setText(itemData.capabilities);

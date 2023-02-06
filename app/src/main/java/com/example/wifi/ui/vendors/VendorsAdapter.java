@@ -70,7 +70,7 @@ public class VendorsAdapter extends BaseAdapter {
         return view;
     }
 
-    public List<VendorModel> readFile(Context activity) {
+    static public List<VendorModel> readFile(Context activity) {
         Resources r = activity.getResources();
         List<VendorModel> vendors = new ArrayList<>();
         InputStream inputStream = r.openRawResource(R.raw.data);
@@ -108,7 +108,7 @@ public class VendorsAdapter extends BaseAdapter {
                     filteredList.add(vendor);
                 }
                 for (String address : vendor.getMacAddresses()) {
-                    if (address.contains(filter.toLowerCase(Locale.ROOT))) {
+                    if (address.contains(filter.toUpperCase(Locale.ROOT))) {
                         filteredList.add(vendor);
                     }
                 }
