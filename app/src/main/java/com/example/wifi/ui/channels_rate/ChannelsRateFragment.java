@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
+import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentChannelRateBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 
@@ -51,8 +52,11 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         bestChannels = binding.bestChannels;
         channelsRatingList = binding.channelRatingList;
         scanResultList = new ArrayList<>();
-        channelRateAdapter = new ChannelRateAdapter(getActivity(), scanResultList);
+        //for 2.4 only
+        channelRateAdapter = new ChannelRateAdapter(getActivity(), scanResultList, Utils.CHANNELS_24GHZ_BAND);
         channelsRatingList.setAdapter(channelRateAdapter);
+        bestChannels = binding.bestChannels;
+        bestChannels.setText(channelRateAdapter.getBestChannels(channelRateAdapter.getCountedChannels()));
 
         return binding.getRoot();
     }
@@ -68,6 +72,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         swipeRefreshLayout.setRefreshing(true);
         updateChannelsRate();
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+        bestChannels.setText(channelRateAdapter.getBestChannels(channelRateAdapter.getCountedChannels()));
         swipeRefreshLayout.setRefreshing(false);
     }
 

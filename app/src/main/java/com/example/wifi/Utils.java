@@ -57,7 +57,6 @@ public class Utils {
         aMap.put(2462, 11);
         aMap.put(2467, 12);
         aMap.put(2472, 13);
-        aMap.put(2484, 14);
         CHANNELS_24GHZ_BAND = Collections.unmodifiableMap(aMap);
 
         aMap = new HashMap<>();

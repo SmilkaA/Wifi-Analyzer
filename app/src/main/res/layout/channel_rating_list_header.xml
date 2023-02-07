@@ -23,6 +23,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_weight="1.75"
+        android:gravity="center"
         android:text="@string/channel_rating_heading_number"
         android:textStyle="bold" />
 
@@ -30,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.75"
+        android:gravity="center"
         android:text="@string/channel_rating_heading_count"
         android:textStyle="bold" />
 </LinearLayout>

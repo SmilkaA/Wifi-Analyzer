@@ -102,7 +102,7 @@ public class AccessPointAdapter extends BaseAdapter {
         if (frequencies.length == 1) {
             channel = String.valueOf(Utils.getChannel(frequencies[0]));
         } else if (frequencies.length == 2) {
-            channel = Utils.getChannel(frequencies[0]) + "+" + Utils.getChannel(frequencies[1]);
+            channel = Utils.getChannel(frequencies[0]) + "(" + Utils.getChannel(frequencies[1]) + ")";
         }
         channelItem.setText(channel);
 
@@ -111,7 +111,7 @@ public class AccessPointAdapter extends BaseAdapter {
         String macAddress = itemData.BSSID;
         for (VendorModel vendor : vendorList) {
             for (String address : vendor.getMacAddresses()) {
-                if (address.contains(macAddress.replace(":", "").substring(0, 6).toLowerCase(Locale.ROOT))) {
+                if (address.contains(macAddress.replace(":", "").substring(0, 6).toUpperCase(Locale.ROOT))) {
                     vendorItem.setText(vendor.getVendorName());
                 }
             }
