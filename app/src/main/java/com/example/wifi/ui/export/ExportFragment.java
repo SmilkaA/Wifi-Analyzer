@@ -1,37 +1,58 @@
 package com.example.wifi.ui.export;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
+import com.example.wifi.MainActivity;
 import com.example.wifi.databinding.FragmentExportBinding;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class ExportFragment extends Fragment {
 
     private FragmentExportBinding binding;
+    private final String title = "Access points for " +
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("d MMM yyyy - HH:mm :"));
+    private MainActivity mainActivity;
+
+    @Override
+    public void onAttach(@NonNull Activity activity) {
+        super.onAttach(activity);
+        mainActivity = (MainActivity) activity;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ExportViewModel exportViewModel =
-                new ViewModelProvider(this).get(ExportViewModel.class);
-
         binding = FragmentExportBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TITLE, title);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, title + getAccessPointData());
+        sendIntent.setType("text/plain");
 
-        final TextView textView = binding.textHome;
-        exportViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        Intent shareIntent = Intent.createChooser(sendIntent, title);
+        startActivity(shareIntent);
+        return binding.getRoot();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private String getAccessPointData() {
+        return String.valueOf(mainActivity.getData());
     }
 }
