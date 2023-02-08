@@ -58,4 +58,5 @@
     <string name="wifi_band_5ghz">5 GHz</string>
     <string name="wifi_band_6ghz">6 GHz</string>
     <string name="scanner_pause">pause</string>
+    <string name="wifi_channels_list_url">https://en.wikipedia.org/wiki/List_of_WLAN_channels</string>
 </resources>
