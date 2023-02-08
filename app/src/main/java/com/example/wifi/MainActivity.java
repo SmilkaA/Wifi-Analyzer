@@ -1,6 +1,7 @@
 package com.example.wifi;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.format.Formatter;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -191,9 +194,9 @@ public class MainActivity extends AppCompatActivity {
         WifiInfo info = wifi.getConnectionInfo();
         List<ScanResult> scanResults = getData();
         for (ScanResult result : scanResults) {
-            if(info.getSSID().replace("\"","").equals(result.SSID)){
-                accessPointMainView.setSsidView(result.SSID+" (" + result.BSSID + ")");
-               accessPointMainView.setLevelView( String.valueOf(result.level));
+            if (info.getSSID().replace("\"", "").equals(result.SSID)) {
+                accessPointMainView.setSsidView(result.SSID + " (" + result.BSSID + ")");
+                accessPointMainView.setLevelView(String.valueOf(result.level));
                 String channel = "";
                 int[] frequencies = Utils.getFrequencies(result);
                 if (frequencies.length == 1) {
@@ -202,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     channel = Utils.getChannel(frequencies[0]) + "+" + Utils.getChannel(frequencies[1]);
                 }
                 accessPointMainView.setChannelView(channel);
-               accessPointMainView.setPrimaryFrequencyView(Utils.getChannelWidth(result) + " MHz");
+                accessPointMainView.setPrimaryFrequencyView(Utils.getChannelWidth(result) + " MHz");
                 Utils.FrequencyBand fBand = Utils.getFrequencyBand(result);
                 String frequencyItemText = "";
                 if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
@@ -215,12 +218,15 @@ public class MainActivity extends AppCompatActivity {
                 double exp = (27.55 - (20 * Math.log10(Double.parseDouble(frequencyItemText))) + Math.abs(result.level)) / 20.0;
                 double distanceM = Math.pow(10.0, exp);
                 accessPointMainView.setDistanceView("~" + String.valueOf(distanceM / 1000).substring(0, 5) + "m");
-                accessPointMainView.setSpeedView(info.getLinkSpeed()+"Mbps");
+                accessPointMainView.setSpeedView(info.getLinkSpeed() + "Mbps");
                 accessPointMainView.setIPView(Formatter.formatIpAddress(info.getIpAddress()));
                 accessPointMainView.setVisibility(View.VISIBLE);
                 break;
             }
         }
 
+    }
+
+    public void openFilterTab() {
     }
 }

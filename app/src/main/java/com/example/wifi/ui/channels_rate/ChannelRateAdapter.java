@@ -2,6 +2,7 @@ package com.example.wifi.ui.channels_rate;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,7 +89,7 @@ public class ChannelRateAdapter extends BaseAdapter {
         }
         int frequencyMin;
         int frequencyMax;
-        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
+        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ && channelsFrequency.size() == 13) {
             if (!(channel == 1)) {
                 frequencyMin = 2412 + ((channel - 1) * 5) - 20;
                 frequencyMax = 2412 + ((channel - 1) * 5) + 20;
@@ -97,7 +98,7 @@ public class ChannelRateAdapter extends BaseAdapter {
                 frequencyMax = 2422;
             }
             return (frequencyMin <= channelsFrequency.get(checkChannel - 1)) && (channelsFrequency.get(checkChannel - 1) <= frequencyMax);
-        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ) {
+        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ && channelsFrequency.size() == 65) {
             if (!(channel == 1)) {
                 frequencyMin = 5000 + (channel * 5) - 20;
                 frequencyMax = 25000 + (channel * 5) + 20;
@@ -105,7 +106,8 @@ public class ChannelRateAdapter extends BaseAdapter {
                 frequencyMin = 5000 + (channel * 5) - 10;
                 frequencyMax = 25000 + (channel * 5) + 10;
             }
-            return frequencyMin <= wifi.frequency && wifi.frequency <= frequencyMax;
+            return frequencyMin <= channelsFrequency.get(checkChannel - 1) &&
+                    channelsFrequency.get(checkChannel - 1) <= frequencyMax;
         } else if (fBand == Utils.FrequencyBand.SIX_GHZ) {
             //TODO: find out how to calculate it
             return false;
