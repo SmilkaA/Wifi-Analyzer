@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.wifi.MainActivity;
 import com.example.wifi.R;
 import com.example.wifi.databinding.FragmentExportBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +38,8 @@ public class ExportFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.GONE);
         setHasOptionsMenu(true);
         binding = FragmentExportBinding.inflate(inflater, container, false);
         Intent sendIntent = new Intent();

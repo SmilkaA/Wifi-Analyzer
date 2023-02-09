@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.wifi.R;
 import com.example.wifi.databinding.FragmentVendorsBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class VendorsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.GONE);
         setHasOptionsMenu(true);
         binding = FragmentVendorsBinding.inflate(inflater, container, false);
 

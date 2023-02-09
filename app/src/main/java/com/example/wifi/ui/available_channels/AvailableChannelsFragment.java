@@ -18,6 +18,7 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentAvailableChannelsBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,6 +43,8 @@ public class AvailableChannelsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.GONE);
         binding = FragmentAvailableChannelsBinding.inflate(inflater, container, false);
         setHasOptionsMenu(true);
 

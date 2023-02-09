@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.wifi.R;
 import com.example.wifi.databinding.FragmentAboutAppBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AboutFragment extends Fragment {
 
@@ -21,7 +22,8 @@ public class AboutFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.GONE);
         setHasOptionsMenu(true);
 
         AboutViewModel aboutViewModel =
