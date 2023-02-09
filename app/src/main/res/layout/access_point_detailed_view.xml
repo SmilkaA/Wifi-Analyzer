@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal">
 
     <TextView
@@ -14,8 +15,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,6 +70,7 @@
                         android:layout_height="36dp"
                         android:layout_gravity="center_vertical"
                         android:contentDescription="@null" />
+
                     <ImageView
                         android:id="@+id/wiFiStandardImage_in_detailed"
                         android:layout_width="12dp"
@@ -110,8 +112,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        android:textStyle="bold"
                         android:textColor="#36EFFF"
+                        android:textStyle="bold"
                         tools:text="140(150)" />
 
                     <TextView
@@ -119,16 +121,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        tools:text="5750MHz"
-                        android:textColor="@color/purple_500"/>
+                        android:textColor="@color/purple_500"
+                        tools:text="5750MHz" />
 
                     <TextView
                         android:id="@+id/distan_in_detailedce"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/teal_700"
                         android:textStyle="bold"
-                        tools:text="~999.9m"
-                        android:textColor="@color/teal_700"/>
+                        tools:text="~999.9m" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -141,15 +143,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        tools:text="5700-5800"
-                        android:textColor="@color/purple_500"/>
+                        android:textColor="@color/purple_500"
+                        tools:text="5700-5800" />
+
                     <TextView
                         android:id="@+id/width_in_detailed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        tools:text="(160MHz)"
-                        android:textColor="@color/purple_500" />
+                        android:textColor="@color/purple_500"
+                        tools:text="(160MHz)" />
 
                     <TextView
                         android:id="@+id/vendorShort_in_detailed"

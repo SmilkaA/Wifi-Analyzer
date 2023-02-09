@@ -44,9 +44,10 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         scanResultList = new ArrayList<>();
 
         wifiListView = binding.accessPointsView;
-        accessPointAdapter = new AccessPointAdapter(getActivity(), scanResultList);
+        accessPointAdapter = new AccessPointAdapter(requireActivity(), scanResultList);
         wifiListView.setAdapter(accessPointAdapter);
-
+        wifiListView.setOnItemClickListener((arg0, arg1, position, arg3) ->
+                new AccessPointPopUp(requireActivity(),accessPointAdapter.getItem(position)).show(getChildFragmentManager(), "ok"));
         accessPointMainView = binding.viewOfCurrentlyConnectedWifi;
         accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);

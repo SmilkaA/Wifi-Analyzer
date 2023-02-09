@@ -1,7 +1,5 @@
 package com.example.wifi.ui.access_points;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -9,70 +7,49 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.os.Build;
-import android.view.Gravity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.ui.vendors.VendorModel;
 import com.example.wifi.ui.vendors.VendorsAdapter;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
-public class AccessPointAdapter extends BaseAdapter {
+public class AccessPointPopUp extends DialogFragment {
+
+    private ScanResult itemData;
     private Context context;
-    private ArrayList<ScanResult> data;
-    private static LayoutInflater inflater = null;
 
-    public AccessPointAdapter(Context context, ArrayList<ScanResult> data) {
+    public AccessPointPopUp(Context context, ScanResult item) {
         this.context = context;
-        this.data = data;
-
-        inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-    }
-
-    @Override
-    public int getCount() {
-        return data.size();
-    }
-
-    @Override
-    public ScanResult getItem(int i) {
-        return data.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
+        this.itemData = item;
     }
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public View getView(int i, View convertView, ViewGroup viewGroup) {
-        View view = convertView;
-        if (view == null) {
-            view = inflater.inflate(R.layout.access_point_detailed_view, null);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.access_point_popup_view, container, false);
 
-        ScanResult itemData = data.get(i);
         TextView ssidItem = view.findViewById(R.id.ssid_in_detailed);
         ssidItem.setText(itemData.SSID + " (" + itemData.BSSID + ")");
 
         TextView levelItem = view.findViewById(R.id.level_in_detailed);
         levelItem.setText(context.getString(R.string.level_value, String.valueOf(itemData.level)));
+
+        TextView primaryFrequencyItem = view.findViewById(R.id.primaryFrequency_in_detailed);
+        primaryFrequencyItem.setText(itemData.frequency + "MHz");
 
         ImageView levelImage = view.findViewById(R.id.levelImage_in_detailed);
         Drawable picture;
@@ -112,21 +89,7 @@ public class AccessPointAdapter extends BaseAdapter {
         }
         channelItem.setText(channel);
 
-        TextView vendorItem = view.findViewById(R.id.vendorShort_in_detailed);
-        List<VendorModel> vendorList = VendorsAdapter.readFile(context);
-        String macAddress = itemData.BSSID;
-        for (VendorModel vendor : vendorList) {
-            for (String address : vendor.getMacAddresses()) {
-                if (address.contains(macAddress.replace(":", "").substring(0, 6).toUpperCase(Locale.ROOT))) {
-                    vendorItem.setText(vendor.getVendorName());
-                }
-            }
-        }
-
-        TextView capabilitiesItem = view.findViewById(R.id.capabilities_in_detailed);
-        capabilitiesItem.setText(itemData.capabilities);
-
-        TextView frequencyItem = view.findViewById(R.id.primaryFrequency_in_detailed);
+        TextView frequencyItem = view.findViewById(R.id.wiFiBand);
         TextView frequencyRangeItem = view.findViewById(R.id.channel_frequency_range_in_detailed);
         Utils.FrequencyBand fBand = Utils.getFrequencyBand(itemData);
         String frequencyItemText = "";
@@ -159,6 +122,40 @@ public class AccessPointAdapter extends BaseAdapter {
         double distanceM = Math.pow(10.0, exp);
         distanceItem.setText("~" + String.valueOf(distanceM / 1000).substring(0, 5) + "m");
 
+        TextView timestampItem = view.findViewById(R.id.timestamp);
+        timestampItem.setText(itemData.timestamp / 1000 + "");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:mm:ss.SSS", Locale.US);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        timestampItem.setText(simpleDateFormat.format(new Date(itemData.timestamp / 1000)));
+
+        TextView is801Item = view.findViewById(R.id.flag80211mc);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(itemData.is80211mcResponder()){
+                is801Item.setVisibility(View.VISIBLE);
+            } else {
+                is801Item.setVisibility(View.GONE);
+            }
+        }
+
+        TextView wifiStandardsItem = view.findViewById(R.id.wiFiStandard);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            wifiStandardsItem.setText(itemData.getWifiStandard());
+        }
+
+        TextView capabilitiesItem = view.findViewById(R.id.capabilitiesLong);
+        capabilitiesItem.setText(itemData.capabilities);
+
+        TextView vendorItem = view.findViewById(R.id.vendorLong);
+        List<VendorModel> vendorList = VendorsAdapter.readFile(context);
+        String macAddress = itemData.BSSID.replace(":", "").substring(0, 6).toUpperCase(Locale.ROOT);
+        for (VendorModel vendor : vendorList) {
+            for (String address : vendor.getMacAddresses()) {
+                if (address.contains(macAddress)) {
+                    vendorItem.setText(vendor.getVendorName());
+                }
+            }
+        }
         return view;
     }
+
 }
