@@ -2,25 +2,29 @@ package com.example.wifi;
 
 import android.net.wifi.ScanResult;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Utils {
-    public static final String PREF_SORTING_OPTION			= "PREF_SORTING_OPTION";
-    public static final String PREF_WLAN_ENABLED_BY_APP		= "PREF_WLAN_ENABLED_BY_APP";
-    public static final String PREF_SELECTED_TAB			= "PREF_SELECTED_TAB";
+    public static final String PREF_SORTING_OPTION = "PREF_SORTING_OPTION";
+    public static final String PREF_WLAN_ENABLED_BY_APP = "PREF_WLAN_ENABLED_BY_APP";
+    public static final String PREF_SELECTED_TAB = "PREF_SELECTED_TAB";
 
-    public static final String PREF_FILTER_SSID_ENABLED		= "PREF_FILTER_SSID_ENABLED";
-    public static final String PREF_FILTER_SSID				= "PREF_FILTER_SSID";
+    public static final String PREF_FILTER_SSID_ENABLED = "PREF_FILTER_SSID_ENABLED";
+    public static final String PREF_FILTER_SSID = "PREF_FILTER_SSID";
 
-    public static final String PREF_FILTER_CHANNEL_ENABLED	= "PREF_FILTER_CHANNEL_ENABLED";
-    public static final String PREF_FILTER_CHANNEL			= "PREF_FILTER_CHANNEL";
+    public static final String PREF_FILTER_CHANNEL_ENABLED = "PREF_FILTER_CHANNEL_ENABLED";
+    public static final String PREF_FILTER_CHANNEL = "PREF_FILTER_CHANNEL";
 
-    public static final String PREF_FILTER_CAPABILI_ENABLED	= "PREF_FILTER_CAPABILI_ENABLED";
-    public static final String PREF_FILTER_CAPABILI			= "PREF_FILTER_CAPABILI";
+    public static final String PREF_FILTER_CAPABILI_ENABLED = "PREF_FILTER_CAPABILI_ENABLED";
+    public static final String PREF_FILTER_CAPABILI = "PREF_FILTER_CAPABILI";
 
-    public static final String PREF_SETTING_SCAN_DELAY		= "PREF_SETTING_SCAN_DELAY";
+    public static final String PREF_SETTING_SCAN_DELAY = "PREF_SETTING_SCAN_DELAY";
 
     public enum FrequencyBand {
         TWO_FOUR_GHZ,
@@ -41,6 +45,40 @@ public class Utils {
 
     public static final int START_6GHZ_BAND = 5940;
     public static final int END_6GHZ_BAND = 7100;
+
+    private static final List<String> CHANNELS_24GHZ_COUNTRIES = Arrays.asList("AS", "CA", "CO", "DO", "FM", "GT", "GU", "MP", "MX", "PA", "PR", "UM", "US", "UZ", "VI");
+    private static final List<String> CHANNELS_5GHZ_COUNTRIES = Arrays.asList(
+            "AT",      // ETSI Austria
+            "BE",      // ETSI Belgium
+            "CH",      // ETSI Switzerland
+            "CY",      // ETSI Cyprus
+            "CZ",      // ETSI Czechia
+            "DE",      // ETSI Germany
+            "DK",      // ETSI Denmark
+            "EE",      // ETSI Estonia
+            "ES",      // ETSI Spain
+            "FI",      // ETSI Finland
+            "FR",      // ETSI France
+            "GR",      // ETSI Greece
+            "HU",      // ETSI Hungary
+            "IE",      // ETSI Ireland
+            "IS",      // ETSI Iceland
+            "IT",      // ETSI Italy
+            "LI",      // ETSI Liechtenstein
+            "LT",      // ETSI Lithuania
+            "LU",      // ETSI Luxembourg
+            "LV",      // ETSI Latvia
+            "MT",      // ETSI Malta
+            "NL",      // ETSI Netherlands
+            "NO",      // ETSI Norway
+            "PL",      // ETSI Poland
+            "PT",      // ETSI Portugal
+            "RO",      // ETSI Romania
+            "SE",      // ETSI Sweden
+            "SI",      // ETSI Slovenia
+            "SK",      // ETSI Slovakia
+            "IL"       // ETSI Israel
+    );
 
     static {
         Map<Integer, Integer> aMap = new HashMap<>();
@@ -168,28 +206,23 @@ public class Utils {
     public static FrequencyBand getFrequencyBand(int frequency) {
         if (CHANNELS_24GHZ_BAND.containsKey(frequency)) {
             return FrequencyBand.TWO_FOUR_GHZ;
-        }
-        else if (CHANNELS_5GHZ_BAND.containsKey(frequency)) {
+        } else if (CHANNELS_5GHZ_BAND.containsKey(frequency)) {
             return FrequencyBand.FIVE_GHZ;
-        }
-        else if (CHANNELS_6GHZ_BAND.containsKey(frequency)) {
+        } else if (CHANNELS_6GHZ_BAND.containsKey(frequency)) {
             return FrequencyBand.SIX_GHZ;
-        }
-        else {
+        } else {
             return FrequencyBand.UNKNOWN;
         }
     }
 
     public static int[] getFrequencies(ScanResult sr) {
         if (android.os.Build.VERSION.SDK_INT < 23 || sr.channelWidth == ScanResult.CHANNEL_WIDTH_20MHZ) {
-            return new int[] { sr.frequency };
-        }
-        else {
+            return new int[]{sr.frequency};
+        } else {
             if (sr.channelWidth == ScanResult.CHANNEL_WIDTH_80MHZ_PLUS_MHZ) {
-                return new int[] { sr.centerFreq0, sr.centerFreq1 };
-            }
-            else {
-                return new int[] { sr.centerFreq0 };
+                return new int[]{sr.centerFreq0, sr.centerFreq1};
+            } else {
+                return new int[]{sr.centerFreq0};
             }
         }
     }
@@ -197,14 +230,11 @@ public class Utils {
     public static int getChannel(int frequency) {
         if (CHANNELS_24GHZ_BAND.containsKey(frequency)) {
             return CHANNELS_24GHZ_BAND.get(frequency);
-        }
-        else if (CHANNELS_5GHZ_BAND.containsKey(frequency)) {
+        } else if (CHANNELS_5GHZ_BAND.containsKey(frequency)) {
             return CHANNELS_5GHZ_BAND.get(frequency);
-        }
-        else if (CHANNELS_6GHZ_BAND.containsKey(frequency)) {
+        } else if (CHANNELS_6GHZ_BAND.containsKey(frequency)) {
             return CHANNELS_6GHZ_BAND.get(frequency);
-        }
-        else {
+        } else {
             return -1;
         }
     }
@@ -227,5 +257,22 @@ public class Utils {
             default:
                 return 20;
         }
+    }
+
+    public static Map<Integer, Integer> sortMapByValues(Map<Integer, Integer> channelsBand) {
+        LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
+        ArrayList<Integer> list = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : channelsBand.entrySet()) {
+            list.add(entry.getValue());
+        }
+        Collections.sort(list);
+        for (int num : list) {
+            for (Map.Entry<Integer, Integer> entry : channelsBand.entrySet()) {
+                if (entry.getValue().equals(num)) {
+                    sortedMap.put(entry.getKey(), num);
+                }
+            }
+        }
+        return sortedMap;
     }
 }

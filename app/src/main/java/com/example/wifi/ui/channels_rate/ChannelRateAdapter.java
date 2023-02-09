@@ -32,7 +32,7 @@ public class ChannelRateAdapter extends BaseAdapter {
     public ChannelRateAdapter(Context context, ArrayList<ScanResult> data, Map<Integer, Integer> channelsBand) {
         this.context = context;
         this.wifiData = data;
-        channelsBand = sortByValues(channelsBand);
+        channelsBand = Utils.sortMapByValues(channelsBand);
         this.channelsFrequency = new ArrayList<>(channelsBand.keySet());
         this.channelsNumbers = new ArrayList<>(channelsBand.values());
 
@@ -115,29 +115,13 @@ public class ChannelRateAdapter extends BaseAdapter {
         return false;
     }
 
-    private Map<Integer, Integer> sortByValues(Map<Integer, Integer> channelsBand) {
-        LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
-        ArrayList<Integer> list = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : channelsBand.entrySet()) {
-            list.add(entry.getValue());
-        }
-        Collections.sort(list);
-        for (int num : list) {
-            for (Map.Entry<Integer, Integer> entry : channelsBand.entrySet()) {
-                if (entry.getValue().equals(num)) {
-                    sortedMap.put(entry.getKey(), num);
-                }
-            }
-        }
-        return sortedMap;
-    }
 
     public Map<Integer, Integer> getCountedChannels() {
         return countedChannels;
     }
 
     public String getBestChannels(Map<Integer, Integer> channelsRate) {
-        return sortByValues(channelsRate).keySet()
+        return Utils.sortMapByValues(channelsRate).keySet()
                 .toString().replace('[', ' ').replace(']', ' ');
     }
 }
