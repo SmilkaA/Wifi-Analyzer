@@ -23,7 +23,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     private FragmentAccessPointsBinding binding;
     private ListView wifiListView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ArrayList<ScanResult> scanResultList;
+    private List<ScanResult> scanResultList;
     private AccessPointAdapter accessPointAdapter;
     private AccessPointMainView accessPointMainView;
     private MainActivity mainActivity;

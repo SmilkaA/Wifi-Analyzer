@@ -62,4 +62,6 @@
     <string name="wifi_band_6ghz_available">6 GHz: </string>
     <string name="scanner_pause">pause</string>
     <string name="wifi_channels_list_url">https://en.wikipedia.org/wiki/List_of_WLAN_channels</string>
+    <string name="signal_strength">Signal Strength(dBm)</string>
+    <string name="scan_count">Scan Count</string>
 </resources>

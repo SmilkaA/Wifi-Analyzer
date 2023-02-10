@@ -1,7 +1,6 @@
 package com.example.wifi;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.format.Formatter;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,7 +21,6 @@ import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -52,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CHANGE_WIFI_STATE
     };
 
-    private boolean scanTimerIsRunning = false;
     private long lastScanResultReceivedTime = 0;
 
     @Override
@@ -131,11 +127,9 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
         float scanDelay = sharedPrefs.getFloat(Utils.PREF_SETTING_SCAN_DELAY, getDefaultScanDelay());
         long delay = (long) Math.max(0, scanDelay - (System.currentTimeMillis() - lastScanResultReceivedTime));
-        scanTimerIsRunning = true;
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                scanTimerIsRunning = false;
                 wifi.startScan();
             }
         }, delay);
