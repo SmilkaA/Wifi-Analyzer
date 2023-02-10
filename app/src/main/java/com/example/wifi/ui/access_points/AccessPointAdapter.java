@@ -9,15 +9,11 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.os.Build;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -27,16 +23,15 @@ import com.example.wifi.Utils;
 import com.example.wifi.ui.vendors.VendorModel;
 import com.example.wifi.ui.vendors.VendorsAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class AccessPointAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<ScanResult> data;
+    private List<ScanResult> data;
     private static LayoutInflater inflater = null;
 
-    public AccessPointAdapter(Context context, ArrayList<ScanResult> data) {
+    public AccessPointAdapter(Context context, List<ScanResult> data) {
         this.context = context;
         this.data = data;
 

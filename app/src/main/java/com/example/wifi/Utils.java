@@ -1,29 +1,17 @@
 package com.example.wifi;
 
+import android.graphics.Color;
 import android.net.wifi.ScanResult;
+import android.os.Build;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Utils {
-    public static final String PREF_SORTING_OPTION = "PREF_SORTING_OPTION";
-    public static final String PREF_WLAN_ENABLED_BY_APP = "PREF_WLAN_ENABLED_BY_APP";
-    public static final String PREF_SELECTED_TAB = "PREF_SELECTED_TAB";
-
-    public static final String PREF_FILTER_SSID_ENABLED = "PREF_FILTER_SSID_ENABLED";
-    public static final String PREF_FILTER_SSID = "PREF_FILTER_SSID";
-
-    public static final String PREF_FILTER_CHANNEL_ENABLED = "PREF_FILTER_CHANNEL_ENABLED";
-    public static final String PREF_FILTER_CHANNEL = "PREF_FILTER_CHANNEL";
-
-    public static final String PREF_FILTER_CAPABILI_ENABLED = "PREF_FILTER_CAPABILI_ENABLED";
-    public static final String PREF_FILTER_CAPABILI = "PREF_FILTER_CAPABILI";
-
     public static final String PREF_SETTING_SCAN_DELAY = "PREF_SETTING_SCAN_DELAY";
 
     public enum FrequencyBand {
@@ -45,40 +33,6 @@ public class Utils {
 
     public static final int START_6GHZ_BAND = 5940;
     public static final int END_6GHZ_BAND = 7100;
-
-    private static final List<String> CHANNELS_24GHZ_COUNTRIES = Arrays.asList("AS", "CA", "CO", "DO", "FM", "GT", "GU", "MP", "MX", "PA", "PR", "UM", "US", "UZ", "VI");
-    private static final List<String> CHANNELS_5GHZ_COUNTRIES = Arrays.asList(
-            "AT",      // ETSI Austria
-            "BE",      // ETSI Belgium
-            "CH",      // ETSI Switzerland
-            "CY",      // ETSI Cyprus
-            "CZ",      // ETSI Czechia
-            "DE",      // ETSI Germany
-            "DK",      // ETSI Denmark
-            "EE",      // ETSI Estonia
-            "ES",      // ETSI Spain
-            "FI",      // ETSI Finland
-            "FR",      // ETSI France
-            "GR",      // ETSI Greece
-            "HU",      // ETSI Hungary
-            "IE",      // ETSI Ireland
-            "IS",      // ETSI Iceland
-            "IT",      // ETSI Italy
-            "LI",      // ETSI Liechtenstein
-            "LT",      // ETSI Lithuania
-            "LU",      // ETSI Luxembourg
-            "LV",      // ETSI Latvia
-            "MT",      // ETSI Malta
-            "NL",      // ETSI Netherlands
-            "NO",      // ETSI Norway
-            "PL",      // ETSI Poland
-            "PT",      // ETSI Portugal
-            "RO",      // ETSI Romania
-            "SE",      // ETSI Sweden
-            "SI",      // ETSI Slovenia
-            "SK",      // ETSI Slovakia
-            "IL"       // ETSI Israel
-    );
 
     static {
         Map<Integer, Integer> aMap = new HashMap<>();
@@ -245,8 +199,6 @@ public class Utils {
         }
 
         switch (sr.channelWidth) {
-            case ScanResult.CHANNEL_WIDTH_20MHZ:
-                return 20;
             case ScanResult.CHANNEL_WIDTH_40MHZ:
                 return 40;
             case ScanResult.CHANNEL_WIDTH_80MHZ:
@@ -274,5 +226,16 @@ public class Utils {
             }
         }
         return sortedMap;
+    }
+
+    public static int getRandomColor() {
+        Random randomGenerator = new Random();
+        int r = randomGenerator.nextInt(256);
+        int g = randomGenerator.nextInt(256);
+        int b = randomGenerator.nextInt(256);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Color.rgb(r, g, b);
+        }
+        return Color.BLUE;
     }
 }

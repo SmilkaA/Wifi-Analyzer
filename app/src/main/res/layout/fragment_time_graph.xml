@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.access_points.AccessPointsFragment">
+    tools:context=".ui.channels_graph.ChannelGraphFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/timeGraphRefresh"
@@ -11,11 +11,21 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.example.wifi.ui.access_points.AccessPointMainView
-            android:id="@+id/timeGraphAccessPoint"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <com.example.wifi.ui.access_points.AccessPointMainView
+                android:id="@+id/timeGraphAccessPoint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/timeGraphView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="75dp" />
+        </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
