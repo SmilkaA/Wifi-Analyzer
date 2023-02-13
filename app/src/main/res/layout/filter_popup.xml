@@ -1,0 +1,235 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/filterSSID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_ssid_title" />
+
+            <EditText
+                android:id="@+id/filterSSIDText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="@string/filter_ssid_hint"
+                android:inputType="text"
+                android:maxLength="25"
+                android:maxLines="1" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/filterWiFiBand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_wifi_band_title" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/filterWifiBand2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/wifi_band_2ghz"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterWifiBand5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/wifi_band_5ghz"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterWifiBand6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/wifi_band_6ghz"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/filterStrength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_strength_title" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/filterStrength0"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_margin="15dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_signal_wifi_0_bar" />
+
+                <ImageView
+                    android:id="@+id/filterStrength1"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_margin="15dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_signal_wifi_1_bar" />
+
+                <ImageView
+                    android:id="@+id/filterStrength2"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_margin="15dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_signal_wifi_2_bar" />
+
+                <ImageView
+                    android:id="@+id/filterStrength3"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_margin="15dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_signal_wifi_3_bar" />
+
+                <ImageView
+                    android:id="@+id/filterStrength4"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_margin="15dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_signal_wifi_4_bar" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/filterSecurity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_security_title" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/filterSecurityNone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/security_none"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterSecurityWPS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/security_wps"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterSecurityWEP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/security_wep"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterSecurityWPA"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/security_wpa"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterSecurityWPA2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/security_wpa2"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/filterSecurityWPA3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/security_wpa3"
+                    android:textColor="@color/selected"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

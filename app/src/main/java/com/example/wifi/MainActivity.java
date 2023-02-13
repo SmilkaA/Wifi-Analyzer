@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.wifi.ui.FilterPopUp;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -222,5 +223,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openFilterTab() {
+        new FilterPopUp(this, getData()).show(getSupportFragmentManager(), "ok");
     }
 }

@@ -1,9 +1,13 @@
 package com.example.wifi.ui.time_graph;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,6 +39,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     private List<ScanResult> scanResultList;
     private int scanCount = 1;
     private List<LineGraphSeries<DataPoint>> series;
+    private Menu mainMenu;
 
     @Override
     public void onAttach(@NonNull Activity activity) {
@@ -46,6 +51,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentTimeGraphBinding.inflate(inflater, container, false);
+        setHasOptionsMenu(true);
 
         swipeRefreshLayout = binding.timeGraphRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -77,6 +83,32 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
         fillGraph();
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        mainMenu = menu;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_wifi_band_2ghz:
+                mainMenu.getItem(0).setTitle(R.string.wifi_band_2ghz);
+                return true;
+            case R.id.action_wifi_band_5ghz:
+                mainMenu.getItem(0).setTitle(R.string.wifi_band_5ghz);
+                return true;
+            case R.id.action_wifi_band_6ghz:
+                mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
+                return true;
+            case R.id.action_filter:
+                mainActivity.openFilterTab();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void initGraphView() {

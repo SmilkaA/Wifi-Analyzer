@@ -13,4 +13,5 @@
     <color name="wlanscanner_diagram_labels">#666666</color>
     <color name="wlanscanner_diagram_border">#666666</color>
     <color name="wlanscanner_diagram_lines">#333333</color>
+    <color name="selected">#164EFA</color>
 </resources>

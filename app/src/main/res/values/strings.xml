@@ -64,4 +64,15 @@
     <string name="wifi_channels_list_url">https://en.wikipedia.org/wiki/List_of_WLAN_channels</string>
     <string name="signal_strength">Signal Strength(dBm)</string>
     <string name="scan_count">Scan Count</string>
+    <string name="filter_ssid_title">SSID</string>
+    <string name="filter_ssid_hint">enter SSID</string>
+    <string name="filter_wifi_band_title">WI-Fi Band</string>
+    <string name="filter_security_title">Security</string>
+    <string name="filter_strength_title">Signal Strength</string>
+    <string name="security_none">None</string>
+    <string name="security_wps">WPS</string>
+    <string name="security_wep">WEP</string>
+    <string name="security_wpa">WPA</string>
+    <string name="security_wpa2">WPA2</string>
+    <string name="security_wpa3">WPA3</string>
 </resources>
