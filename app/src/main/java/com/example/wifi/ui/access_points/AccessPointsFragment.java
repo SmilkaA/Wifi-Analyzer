@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
 import com.example.wifi.R;
+import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentAccessPointsBinding;
 
 import java.util.ArrayList;
@@ -92,12 +93,15 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         switch (item.getItemId()) {
             case R.id.action_wifi_band_2ghz:
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_2ghz);
+                filterByFrequency(Utils.FrequencyBand.TWO_FOUR_GHZ);
                 return true;
             case R.id.action_wifi_band_5ghz:
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_5ghz);
+                filterByFrequency(Utils.FrequencyBand.FIVE_GHZ);
                 return true;
             case R.id.action_wifi_band_6ghz:
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
+                filterByFrequency(Utils.FrequencyBand.SIX_GHZ);
                 return true;
             case R.id.action_filter:
                 mainActivity.openFilterTab();
@@ -110,6 +114,16 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         List<ScanResult> scanResults = mainActivity.getData();
         scanResultList.clear();
         scanResultList.addAll(scanResults);
+        accessPointAdapter.notifyDataSetChanged();
+    }
+
+    private void filterByFrequency(Utils.FrequencyBand frequencyBand){
+        List<ScanResult> scanResults = mainActivity.getData();
+        scanResultList.clear();
+        for (ScanResult result :scanResults){
+            if(Utils.getFrequencyBand(result)== frequencyBand)
+                scanResultList.add(result);
+        }
         accessPointAdapter.notifyDataSetChanged();
     }
 }
