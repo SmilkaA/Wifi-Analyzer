@@ -18,6 +18,7 @@ import com.example.wifi.MainActivity;
 import com.example.wifi.R;
 import com.example.wifi.databinding.FragmentChannelGraphBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
+import com.example.wifi.ui.access_points.AccessPointPopUp;
 
 public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -45,6 +46,8 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this);
 
         accessPointMainView = binding.channelGraphAccessPoint;
+        accessPointMainView.setOnClickListener(view ->
+                new AccessPointPopUp(requireActivity(),mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
         accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 

@@ -18,6 +18,7 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentAvailableChannelsBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
+import com.example.wifi.ui.access_points.AccessPointPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
@@ -49,6 +50,8 @@ public class AvailableChannelsFragment extends Fragment {
         setHasOptionsMenu(true);
 
         accessPointMainView = binding.availableChannelsAccessPointView;
+        accessPointMainView.setOnClickListener(view ->
+                new AccessPointPopUp(requireActivity(),mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         countryName = binding.availableChannelsList.channelAvailableCountry;
