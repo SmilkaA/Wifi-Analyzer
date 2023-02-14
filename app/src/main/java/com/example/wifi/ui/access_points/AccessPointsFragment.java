@@ -55,11 +55,11 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         accessPointAdapter = new AccessPointAdapter(requireActivity(), scanResultList);
         wifiListView.setAdapter(accessPointAdapter);
         wifiListView.setOnItemClickListener((arg0, arg1, position, arg3) ->
-                new AccessPointPopUp(requireActivity(),accessPointAdapter.getItem(position)).show(getChildFragmentManager(), "ok"));
+                new AccessPointPopUp(requireActivity(), accessPointAdapter.getItem(position)).show(getChildFragmentManager(), "ok"));
         accessPointMainView = binding.viewOfCurrentlyConnectedWifi;
         accessPointMainView.setVisibility(View.GONE);
         accessPointMainView.setOnClickListener(view ->
-                new AccessPointPopUp(requireActivity(),accessPointAdapter.getItem(0)).show(getChildFragmentManager(), "ok"));
+                new AccessPointPopUp(requireActivity(), accessPointAdapter.getItem(0)).show(getChildFragmentManager(), "ok"));
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         updateWiFiList();
@@ -117,11 +117,11 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         accessPointAdapter.notifyDataSetChanged();
     }
 
-    private void filterByFrequency(Utils.FrequencyBand frequencyBand){
+    private void filterByFrequency(Utils.FrequencyBand frequencyBand) {
         List<ScanResult> scanResults = mainActivity.getData();
         scanResultList.clear();
-        for (ScanResult result :scanResults){
-            if(Utils.getFrequencyBand(result)== frequencyBand)
+        for (ScanResult result : scanResults) {
+            if (Utils.getFrequencyBand(result) == frequencyBand)
                 scanResultList.add(result);
         }
         accessPointAdapter.notifyDataSetChanged();
