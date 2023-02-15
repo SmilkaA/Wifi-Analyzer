@@ -75,4 +75,9 @@
     <string name="security_wpa">WPA</string>
     <string name="security_wpa2">WPA2</string>
     <string name="security_wpa3">WPA3</string>
+    <string name="country_code_key">country_code</string>
+    <string name="country_code_summary">%s</string>
+    <string name="country_code_title">Country</string>
+    <string name="language_key">language</string>
+    <string name="language_summary">%s</string>
 </resources>

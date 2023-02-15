@@ -105,19 +105,24 @@
             app:title="@string/keep_screen_on_title" />
 
     </PreferenceCategory>
-    <!--    <PreferenceCategory>-->
 
-    <!--        <ListPreference-->
-    <!--            app:key="country_code"-->
-    <!--            app:title="@string/country_title"-->
-    <!--            app:useSimpleSummaryProvider="true" />-->
+    <PreferenceCategory>
+        <com.vrem.wifianalyzer.settings.CountryPreference
+            app:icon="@drawable/ic_location_on"
+            app:key="@string/country_code_key"
+            app:persistent="true"
+            app:summary="@string/country_code_summary"
+            app:useSimpleSummaryProvider="true"
+            app:title="@string/country_code_title" />
 
-    <!--        <ListPreference-->
-    <!--            app:key="language"-->
-    <!--            app:title="@string/language_title"-->
-    <!--            app:useSimpleSummaryProvider="true" />-->
-
-    <!--    </PreferenceCategory>-->
+        <com.vrem.wifianalyzer.settings.LanguagePreference
+            app:icon="@drawable/ic_language"
+            app:key="@string/language_key"
+            app:persistent="true"
+            app:summary="@string/language_summary"
+            app:useSimpleSummaryProvider="true"
+            app:title="@string/language_title" />
+    </PreferenceCategory>
 
     <ListPreference />
 
