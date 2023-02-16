@@ -3,6 +3,7 @@ package com.example.wifi.ui.channels_graph;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
 import com.example.wifi.R;
+import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentChannelGraphBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.example.wifi.ui.access_points.AccessPointPopUp;
@@ -48,7 +50,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
 
         accessPointMainView = binding.channelGraphAccessPoint;
         accessPointMainView.setOnClickListener(view ->
-                new AccessPointPopUp(requireActivity(),mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
+                new AccessPointPopUp(requireActivity(), mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
         accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
@@ -62,6 +64,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onResume() {
+        updatePeriodically();
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
@@ -118,4 +121,13 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
         }
     }
 
+    private void updatePeriodically() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
+                onRefresh();
+            }
+        }, Utils.MILLISECONDS);
+    }
 }

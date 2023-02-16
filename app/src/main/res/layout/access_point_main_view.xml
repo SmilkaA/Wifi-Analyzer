@@ -48,10 +48,10 @@
                 android:id="@+id/levelImage_in_main"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
                 android:contentDescription="@null"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

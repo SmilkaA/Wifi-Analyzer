@@ -9,17 +9,21 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.Handler;
+import android.provider.Settings;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.wifi.ui.access_points.AccessPointMainView;
+import com.example.wifi.ui.channels_rate.ChannelsRateFragment;
 import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -49,14 +53,13 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
     private SharedPreferences sharedPreferences;
     private String theme;
     private String mainAccessPointView;
+    public String refreshingTimer;
     private final static String[] permissions = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.CHANGE_WIFI_STATE
     };
-
-    private long lastScanResultReceivedTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         theme = sharedPreferences.getString("theme", "");
         mainAccessPointView = sharedPreferences.getString("connection_display", "");
+        refreshingTimer = sharedPreferences.getString("scan_interval", "");
         switch (theme) {
             case "Dark":
                 setTheme(android.R.style.Theme_Material_NoActionBar);
@@ -139,25 +143,8 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
         unregisterReceiver(wifiScanReceiver);
     }
 
-    private void receiveScanResults() {
-        List<ScanResult> scanResults = wifi.getScanResults();
-
-        for (ScanResult sr : scanResults) {
-            long age = ((SystemClock.elapsedRealtime() * 1000) - sr.timestamp) / 1000000;
-            if (age > 35) {
-                continue;
-            }
-            scanResultsList.add(sr);
-        }
-        lastScanResultReceivedTime = System.currentTimeMillis();
-        requestScan();
-    }
-
     private void requestScan() {
-        setWLANEnabled();
-        SharedPreferences sharedPrefs = getPreferences(MODE_PRIVATE);
-        float scanDelay = sharedPrefs.getFloat(Utils.PREF_SETTING_SCAN_DELAY, getDefaultScanDelay());
-        long delay = (long) Math.max(0, scanDelay - (System.currentTimeMillis() - lastScanResultReceivedTime));
+        long delay = (long) Math.max(0, Long.parseLong(refreshingTimer) * 1000);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -166,18 +153,16 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
         }, delay);
     }
 
-    public static int getDefaultScanDelay() {
-        if (android.os.Build.VERSION.SDK_INT >= 28) {
-            return 30500;
-        } else {
-            return 500;
-        }
-    }
-
-    private void setWLANEnabled() {
+    public void checkSettings() {
+        wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         if (!wifi.isWifiEnabled()) {
-            Toast.makeText(this, "Enabling WLAN...", Toast.LENGTH_SHORT).show();
-            wifi.setWifiEnabled(true);
+            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        }
+        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (!lm.isLocationEnabled()) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
         }
     }
 
@@ -200,11 +185,13 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
     }
 
     public List<ScanResult> getData() {
-        wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        checkSettings();
         wifiScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
-                receiveScanResults();
+                List<ScanResult> scanResults = wifi.getScanResults();
+                scanResultsList.addAll(scanResults);
+                requestScan();
             }
         };
         registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));

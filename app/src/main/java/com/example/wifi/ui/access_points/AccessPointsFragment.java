@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,10 +54,8 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
                              ViewGroup container, Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
-        mainActivity.setTheme();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-        sortingOption = sharedPreferences.getString("sort_by", "");
-        listViewDisplay = sharedPreferences.getString("access_point_display", "");
+        initFromSharedPreferences();
 
         binding = FragmentAccessPointsBinding.inflate(inflater, container, false);
 
@@ -65,7 +64,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         scanResultList = new ArrayList<>();
 
         wifiListView = binding.accessPointsView;
-        accessPointAdapter = new AccessPointAdapter(requireActivity(), scanResultList,listViewDisplay);
+        accessPointAdapter = new AccessPointAdapter(requireActivity(), scanResultList, listViewDisplay);
         wifiListView.setAdapter(accessPointAdapter);
         wifiListView.setOnItemClickListener((arg0, arg1, position, arg3) ->
                 new AccessPointPopUp(requireActivity(), accessPointAdapter.getItem(position)).show(getChildFragmentManager(), "ok"));
@@ -76,6 +75,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         updateWiFiList();
+        mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         return binding.getRoot();
     }
@@ -88,11 +88,11 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onResume() {
+        updatePeriodically();
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
-        sortingOption = sharedPreferences.getString("sort_by", "");
-        listViewDisplay = sharedPreferences.getString("access_point_display", "");
+        initFromSharedPreferences();
     }
 
     @Override
@@ -133,8 +133,24 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         }
     }
 
+    public void initFromSharedPreferences() {
+        sortingOption = sharedPreferences.getString("sort_by", "");
+        listViewDisplay = sharedPreferences.getString("access_point_display", "");
+    }
+
+    private void updatePeriodically() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
+                onRefresh();
+            }
+        }, Utils.MILLISECONDS);
+    }
+
     private void updateWiFiList() {
-        List<ScanResult> scanResults = sortResult(mainActivity.getData());
+        List<ScanResult> scanResults = mainActivity.getScanResultsList().isEmpty() ?
+                sortResult(mainActivity.getData()) : sortResult(mainActivity.getScanResultsList());
         scanResultList.clear();
         scanResultList.addAll(scanResults);
         accessPointAdapter.notifyDataSetChanged();
@@ -156,7 +172,8 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     }
 
     private void filterByFrequency(Utils.FrequencyBand frequencyBand) {
-        List<ScanResult> scanResults = mainActivity.getData();
+        List<ScanResult> scanResults = mainActivity.getScanResultsList().isEmpty() ?
+                sortResult(mainActivity.getData()) : sortResult(mainActivity.getScanResultsList());
         scanResultList.clear();
         for (ScanResult result : scanResults) {
             if (Utils.getFrequencyBand(result) == frequencyBand)

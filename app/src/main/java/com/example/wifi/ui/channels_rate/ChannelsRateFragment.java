@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -71,6 +72,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onResume() {
+        updatePeriodically();
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
@@ -121,6 +123,16 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void updatePeriodically() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
+                onRefresh();
+            }
+        }, Utils.MILLISECONDS);
     }
 
     private void updateChannelsRate() {

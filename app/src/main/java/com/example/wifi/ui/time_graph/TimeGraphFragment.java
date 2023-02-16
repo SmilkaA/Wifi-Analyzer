@@ -1,11 +1,11 @@
 package com.example.wifi.ui.time_graph;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -89,6 +89,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onResume() {
+        updatePeriodically();
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
@@ -178,5 +179,15 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
             series.get(scanResultList.indexOf(scanResult)).setOnDataPointTapListener((series, dataPoint) -> new AccessPointPopUp(requireActivity(), scanResult).show(getChildFragmentManager(), "ok"));
         }
         scanCount++;
+    }
+
+    private void updatePeriodically() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
+                onRefresh();
+            }
+        }, Utils.MILLISECONDS);
     }
 }

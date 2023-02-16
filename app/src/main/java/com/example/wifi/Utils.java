@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class Utils {
-    public static final String PREF_SETTING_SCAN_DELAY = "PREF_SETTING_SCAN_DELAY";
+
+    public static final int MILLISECONDS = 1000;
 
     public enum FrequencyBand {
         TWO_FOUR_GHZ,

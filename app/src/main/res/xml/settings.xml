@@ -54,7 +54,7 @@
     <PreferenceCategory>
 
         <ListPreference
-            app:defaultValue="2"
+            app:defaultValue="0dBm"
             app:entries="@array/graph_maximum_array"
             app:entryValues="@array/graph_maximum_array"
             app:icon="@drawable/ic_expand_less"
@@ -63,7 +63,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="2"
+            app:defaultValue="Top"
             app:entries="@array/time_graph_legend_array"
             app:entryValues="@array/time_graph_legend_array"
             app:icon="@drawable/ic_show_chart"
