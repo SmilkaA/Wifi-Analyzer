@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory>
 
@@ -24,32 +25,25 @@
             app:title="@string/sort_access_points_by"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="0"
-            app:entries="@array/group_by_array"
-            app:entryValues="@array/group_by_index_array"
-            app:icon="@drawable/ic_group"
-            app:key="group_by"
-            app:title="@string/group_by_title"
-            app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
 
     <PreferenceCategory>
 
         <ListPreference
-            app:defaultValue="0"
+            android:defaultValue="@string/connection_view_compact"
+            app:defaultValue="@string/connection_view_compact"
             app:entries="@array/connection_display_array"
-            app:entryValues="@array/connection_display_index_array"
+            app:entryValues="@array/connection_display_array"
             app:icon="@drawable/ic_view_carousel"
             app:key="connection_display"
             app:title="@string/connection_display_title"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="0"
+            android:defaultValue="@string/access_point_view_complete"
+            app:defaultValue="@string/access_point_view_complete"
             app:entries="@array/access_point_display_array"
-            app:entryValues="@array/access_point_display_index_array"
+            app:entryValues="@array/access_point_display_array"
             app:icon="@drawable/ic_view_carousel"
             app:key="access_point_display"
             app:title="@string/access_point_display_title"
@@ -62,7 +56,7 @@
         <ListPreference
             app:defaultValue="2"
             app:entries="@array/graph_maximum_array"
-            app:entryValues="@array/graph_maximum_index_array"
+            app:entryValues="@array/graph_maximum_array"
             app:icon="@drawable/ic_expand_less"
             app:key="graph_maximum"
             app:title="@string/graph_maximum_title"
@@ -70,19 +64,10 @@
 
         <ListPreference
             app:defaultValue="2"
-            app:entries="@array/graph_legend_array"
-            app:entryValues="@array/graph_legend_index_array"
-            app:icon="@drawable/ic_insert_chart"
-            app:key="graph_legend"
-            app:title="@string/graph_legend_title"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="2"
-            app:entries="@array/graph_legend_array"
-            app:entryValues="@array/graph_legend_index_array"
+            app:entries="@array/time_graph_legend_array"
+            app:entryValues="@array/time_graph_legend_array"
             app:icon="@drawable/ic_show_chart"
-            app:key="graph_legend"
+            app:key="time_graph_legend"
             app:title="@string/time_graph_legend_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -93,7 +78,7 @@
         <ListPreference
             app:defaultValue="0"
             app:entries="@array/theme_array"
-            app:entryValues="@array/theme_index_array"
+            app:entryValues="@array/theme_array"
             app:icon="@drawable/ic_color_lens"
             app:key="theme"
             app:title="@string/theme_title"

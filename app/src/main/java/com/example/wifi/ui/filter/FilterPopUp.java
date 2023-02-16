@@ -1,6 +1,5 @@
 package com.example.wifi.ui.filter;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -26,6 +24,7 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,10 +64,10 @@ public class FilterPopUp extends DialogFragment {
     }
 
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        this.mainActivity = (MainActivity) activity;
-        this.mListener = (OnCompleteListener) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.mainActivity = (MainActivity) getActivity();
+        this.mListener = (OnCompleteListener) getActivity();
     }
 
     @Override
@@ -292,6 +291,8 @@ public class FilterPopUp extends DialogFragment {
     public List<ScanResult> applyFilters(List<ScanResult> scanResults) {
         List<ScanResult> resultList = scanResults;
 
+        resultList = checkSSID(resultList, String.valueOf(filterSSIDText.getText()));
+
         resultList = checkWifiBand(resultList, filterWifiBand2);
         resultList = checkWifiBand(resultList, filterWifiBand5);
         resultList = checkWifiBand(resultList, filterWifiBand6);
@@ -306,6 +307,19 @@ public class FilterPopUp extends DialogFragment {
         resultList = checkSecurity(resultList, filterSecurityWPS);
 
         return resultList;
+    }
+
+    public List<ScanResult> checkSSID(List<ScanResult> resultList, String SSID) {
+        List<ScanResult> results = resultList;
+        if (!SSID.equals("")) {
+            results = new ArrayList<>();
+            for (ScanResult scanResult : resultList) {
+                if (scanResult.SSID.contains(SSID)) {
+                    results.add(scanResult);
+                }
+            }
+        }
+        return results;
     }
 
     public List<ScanResult> checkWifiBand(List<ScanResult> resultList, TextView textView) {

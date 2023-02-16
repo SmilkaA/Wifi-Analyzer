@@ -5,7 +5,6 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.os.Build;
@@ -30,10 +29,12 @@ public class AccessPointAdapter extends BaseAdapter {
     private Context context;
     private List<ScanResult> data;
     private static LayoutInflater inflater = null;
+    private final String listViewDisplay;
 
-    public AccessPointAdapter(Context context, List<ScanResult> data) {
+    public AccessPointAdapter(Context context, List<ScanResult> data, String listViewDisplay) {
         this.context = context;
         this.data = data;
+        this.listViewDisplay = listViewDisplay;
 
         inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
     }
@@ -73,26 +74,24 @@ public class AccessPointAdapter extends BaseAdapter {
         Drawable picture;
         if (itemData.level > -35) {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_4_bar", null, context.getPackageName()));
-            picture.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.GREEN);
         } else if (itemData.level > -55) {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_3_bar", null, context.getPackageName()));
-            picture.setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.YELLOW);
         } else if (itemData.level > -80) {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_2_bar", null, context.getPackageName()));
-            picture.setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.YELLOW);
         } else if (itemData.level > -90) {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_1_bar", null, context.getPackageName()));
-            picture.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.RED);
         } else {
             picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_0_bar", null, context.getPackageName()));
-            picture.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
             levelItem.setTextColor(Color.RED);
         }
         levelImage.setImageDrawable(picture);
+        if(listViewDisplay.equals("Complete")){
+            levelImage.setVisibility(View.VISIBLE);
+        }
 
         TextView channelWidthItem = view.findViewById(R.id.width_in_detailed);
         channelWidthItem.setText(Utils.getChannelWidth(itemData) + " MHz");

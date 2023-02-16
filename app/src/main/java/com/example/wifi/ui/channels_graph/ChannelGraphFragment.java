@@ -1,7 +1,7 @@
 package com.example.wifi.ui.channels_graph;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +19,7 @@ import com.example.wifi.R;
 import com.example.wifi.databinding.FragmentChannelGraphBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.example.wifi.ui.access_points.AccessPointPopUp;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -32,9 +33,9 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     private Menu mainMenu;
 
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        mainActivity = (MainActivity) activity;
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) requireActivity();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -57,6 +58,13 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
         levelDiagram24.updateDiagram(mainActivity.getData());
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
     @Override

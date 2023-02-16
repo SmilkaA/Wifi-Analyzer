@@ -2,6 +2,8 @@ package com.example.wifi.ui.time_graph;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
@@ -21,6 +24,7 @@ import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentTimeGraphBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.example.wifi.ui.access_points.AccessPointPopUp;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
@@ -40,18 +44,25 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     private int scanCount = 1;
     private List<LineGraphSeries<DataPoint>> series;
     private Menu mainMenu;
+    private SharedPreferences sharedPreferences;
+    private String maxSignalStrength;
+    private String legendDisplay;
 
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        mainActivity = (MainActivity) activity;
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) requireActivity();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        maxSignalStrength = sharedPreferences.getString("graph_maximum", "");
+        legendDisplay = sharedPreferences.getString("time_graph_legend", "");
 
         binding = FragmentTimeGraphBinding.inflate(inflater, container, false);
-        setHasOptionsMenu(true);
+
 
         swipeRefreshLayout = binding.timeGraphRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -74,6 +85,16 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        maxSignalStrength = sharedPreferences.getString("graph_maximum", "");
+        legendDisplay = sharedPreferences.getString("time_graph_legend", "");
     }
 
     @Override
@@ -116,12 +137,25 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         graphView.getViewport().setScrollable(true);
         graphView.getViewport().setScalable(true);
         graphView.getViewport().setMinY(-100);
-        graphView.getViewport().setMaxY(0);
+        graphView.getViewport().setMaxY(Integer.parseInt(maxSignalStrength.replace("dBm", "")));
         graphView.getViewport().setYAxisBoundsManual(true);
         graphView.getGridLabelRenderer().setVerticalAxisTitle(getString(R.string.signal_strength));
         graphView.getGridLabelRenderer().setHorizontalAxisTitle(getString(R.string.scan_count));
         graphView.getLegendRenderer().setVisible(true);
-        graphView.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        switch (legendDisplay) {
+            case "Top":
+                graphView.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+                break;
+            case "Bottom":
+                graphView.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.BOTTOM);
+                break;
+            case "Middle":
+                graphView.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.MIDDLE);
+                break;
+            case "Hide":
+                graphView.getLegendRenderer().setVisible(false);
+                break;
+        }
     }
 
     public void fillGraph() {

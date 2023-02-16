@@ -1,12 +1,14 @@
 package com.example.wifi;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -28,6 +30,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.example.wifi.databinding.ActivityMainBinding;
 
@@ -36,13 +39,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCompleteListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private WifiManager wifi;
     private BroadcastReceiver wifiScanReceiver;
     private List<ScanResult> scanResultsList;
+    private SharedPreferences sharedPreferences;
+    private String theme;
+    private String mainAccessPointView;
     private final static String[] permissions = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme();
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -90,6 +97,23 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(drawerNavigationView, navController);
     }
 
+    public void setTheme() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        theme = sharedPreferences.getString("theme", "");
+        mainAccessPointView = sharedPreferences.getString("connection_display", "");
+        switch (theme) {
+            case "Dark":
+                setTheme(android.R.style.Theme_Material_NoActionBar);
+                break;
+            case "Light":
+                setTheme(android.R.style.Theme_Material_Light_NoActionBar);
+                break;
+            case "System":
+                setTheme(android.R.style.Theme_DeviceDefault_NoActionBar);
+                break;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -101,6 +125,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onResume() {
+        setTheme();
+        super.onResume();
     }
 
     @Override
@@ -125,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestScan() {
         setWLANEnabled();
-        SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = getPreferences(MODE_PRIVATE);
         float scanDelay = sharedPrefs.getFloat(Utils.PREF_SETTING_SCAN_DELAY, getDefaultScanDelay());
         long delay = (long) Math.max(0, scanDelay - (System.currentTimeMillis() - lastScanResultReceivedTime));
         new Timer().schedule(new TimerTask() {
@@ -170,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<ScanResult> getData() {
-        wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         wifiScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
@@ -184,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
         return scanResultsList;
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void fillCurrentlyConnectedAccessPoint(AccessPointMainView accessPointMainView) {
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
@@ -201,6 +232,19 @@ public class MainActivity extends AppCompatActivity {
                 }
                 accessPointMainView.setChannelView(channel);
                 accessPointMainView.setPrimaryFrequencyView(Utils.getChannelWidth(result) + " MHz");
+                Drawable picture;
+                if (result.level > -35) {
+                    picture = getResources().getDrawable(getResources().getIdentifier("@drawable/ic_signal_wifi_4_bar", null, getPackageName()));
+                } else if (result.level > -55) {
+                    picture = getResources().getDrawable(getResources().getIdentifier("@drawable/ic_signal_wifi_3_bar", null, getPackageName()));
+                } else if (result.level > -80) {
+                    picture = getResources().getDrawable(getResources().getIdentifier("@drawable/ic_signal_wifi_2_bar", null, getPackageName()));
+                } else if (result.level > -90) {
+                    picture = getResources().getDrawable(getResources().getIdentifier("@drawable/ic_signal_wifi_1_bar", null, getPackageName()));
+                } else {
+                    picture = getResources().getDrawable(getResources().getIdentifier("@drawable/ic_signal_wifi_0_bar", null, getPackageName()));
+                }
+                accessPointMainView.setLevelImageView(picture);
                 Utils.FrequencyBand fBand = Utils.getFrequencyBand(result);
                 String frequencyItemText = "";
                 if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
@@ -219,10 +263,36 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+        showMainAccessPoint(accessPointMainView);
 
     }
 
     public void openFilterTab() {
         new FilterPopUp(this, getData()).show(getSupportFragmentManager(), "ok");
+    }
+
+    @Override
+    public void onComplete(List<ScanResult> resultList) {
+        setScanResultsList(resultList);
+    }
+
+    public List<ScanResult> getScanResultsList() {
+        return this.scanResultsList;
+    }
+
+    public void setScanResultsList(List<ScanResult> newScanResults) {
+        this.scanResultsList = newScanResults;
+    }
+
+    private void showMainAccessPoint(AccessPointMainView accessPointMainView) {
+        if (mainAccessPointView.equals("Complete")) {
+            accessPointMainView.getLevelImageInMain().setVisibility(View.VISIBLE);
+            accessPointMainView.setVisibility(View.VISIBLE);
+        } else if (mainAccessPointView.equals("Compact")) {
+            accessPointMainView.getLevelImageInMain().setVisibility(View.GONE);
+            accessPointMainView.setVisibility(View.VISIBLE);
+        } else {
+            accessPointMainView.setVisibility(View.GONE);
+        }
     }
 }

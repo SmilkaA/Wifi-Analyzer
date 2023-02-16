@@ -1,6 +1,7 @@
 package com.example.wifi.ui.export;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,9 +32,9 @@ public class ExportFragment extends Fragment {
     private MainActivity mainActivity;
 
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        mainActivity = (MainActivity) activity;
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) requireActivity();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,

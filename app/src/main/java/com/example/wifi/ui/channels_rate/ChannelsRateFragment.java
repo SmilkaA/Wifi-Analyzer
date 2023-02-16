@@ -1,7 +1,7 @@
 package com.example.wifi.ui.channels_rate;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,6 +22,7 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentChannelRateBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +40,16 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
     private Menu mainMenu;
 
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        mainActivity = (MainActivity) activity;
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) requireActivity();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentChannelRateBinding.inflate(inflater, container, false);
         setHasOptionsMenu(true);
+
+        binding = FragmentChannelRateBinding.inflate(inflater, container, false);
         swipeRefreshLayout = binding.channelRateRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -65,6 +67,13 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         bestChannels.setText(channelRateAdapter.getBestChannels(channelRateAdapter.getCountedChannels()));
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
     @Override

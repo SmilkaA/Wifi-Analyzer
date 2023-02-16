@@ -1,6 +1,7 @@
 package com.example.wifi.ui.available_channels;
 
-import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.example.wifi.MainActivity;
 import com.example.wifi.R;
@@ -35,31 +37,35 @@ public class AvailableChannelsFragment extends Fragment {
     private TextView availableChannels5;
     private TextView availableChannels6;
     private MainActivity mainActivity;
+    private SharedPreferences sharedPreferences;
+    private String countryCode;
 
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        mainActivity = (MainActivity) activity;
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) requireActivity();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.GONE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        countryCode = sharedPreferences.getString("country_code_key", "");
         binding = FragmentAvailableChannelsBinding.inflate(inflater, container, false);
         setHasOptionsMenu(true);
 
         accessPointMainView = binding.availableChannelsAccessPointView;
         accessPointMainView.setOnClickListener(view ->
-                new AccessPointPopUp(requireActivity(),mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
+                new AccessPointPopUp(requireActivity(), mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         countryName = binding.availableChannelsList.channelAvailableCountry;
-        countryName.setText(getCountryName("UA"));
+        countryName.setText(getCountryName(countryCode));
         availableChannels2 = binding.availableChannelsList.channelAvailableGhz2;
-        availableChannels2.setText(getAvailableChannels24("UA"));
+        availableChannels2.setText(getAvailableChannels24(countryCode));
         availableChannels5 = binding.availableChannelsList.channelAvailableGhz5;
-        availableChannels5.setText(getAvailableChannels5("UA"));
+        availableChannels5.setText(getAvailableChannels5(countryCode));
         availableChannels6 = binding.availableChannelsList.channelAvailableGhz6;
         availableChannels6.setText(getAvailableChannels6());
 
@@ -78,6 +84,12 @@ public class AvailableChannelsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        countryCode = sharedPreferences.getString("country_code_key", "");
     }
 
     private String getCountryName(String countryCode) {

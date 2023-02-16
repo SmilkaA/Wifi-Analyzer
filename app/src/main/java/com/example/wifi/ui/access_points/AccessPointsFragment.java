@@ -1,7 +1,8 @@
 package com.example.wifi.ui.access_points;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,15 +15,19 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
 import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentAccessPointsBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -34,17 +39,25 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     private AccessPointMainView accessPointMainView;
     private MainActivity mainActivity;
     private Menu mainMenu;
+    private SharedPreferences sharedPreferences;
+    private String sortingOption;
+    private String listViewDisplay;
 
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        mainActivity = (MainActivity) activity;
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) requireActivity();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
+        mainActivity.setTheme();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        sortingOption = sharedPreferences.getString("sort_by", "");
+        listViewDisplay = sharedPreferences.getString("access_point_display", "");
+
         binding = FragmentAccessPointsBinding.inflate(inflater, container, false);
 
         swipeRefreshLayout = binding.accessPointsRefresh;
@@ -52,7 +65,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         scanResultList = new ArrayList<>();
 
         wifiListView = binding.accessPointsView;
-        accessPointAdapter = new AccessPointAdapter(requireActivity(), scanResultList);
+        accessPointAdapter = new AccessPointAdapter(requireActivity(), scanResultList,listViewDisplay);
         wifiListView.setAdapter(accessPointAdapter);
         wifiListView.setOnItemClickListener((arg0, arg1, position, arg3) ->
                 new AccessPointPopUp(requireActivity(), accessPointAdapter.getItem(position)).show(getChildFragmentManager(), "ok"));
@@ -71,6 +84,15 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        sortingOption = sharedPreferences.getString("sort_by", "");
+        listViewDisplay = sharedPreferences.getString("access_point_display", "");
     }
 
     @Override
@@ -105,16 +127,32 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
                 return true;
             case R.id.action_filter:
                 mainActivity.openFilterTab();
+                updateWiFiList();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     private void updateWiFiList() {
-        List<ScanResult> scanResults = mainActivity.getData();
+        List<ScanResult> scanResults = sortResult(mainActivity.getData());
         scanResultList.clear();
         scanResultList.addAll(scanResults);
         accessPointAdapter.notifyDataSetChanged();
+    }
+
+    private List<ScanResult> sortResult(List<ScanResult> resultList) {
+        switch (sortingOption) {
+            case "0":
+                resultList = sortByStrength(resultList);
+                break;
+            case "1":
+                resultList = sortBySSID(resultList);
+                break;
+            case "2":
+                resultList = sortByChannel(resultList);
+                break;
+        }
+        return resultList;
     }
 
     private void filterByFrequency(Utils.FrequencyBand frequencyBand) {
@@ -125,5 +163,32 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
                 scanResultList.add(result);
         }
         accessPointAdapter.notifyDataSetChanged();
+    }
+
+    private List<ScanResult> sortByStrength(List<ScanResult> resultList) {
+        Map<Integer, ScanResult> sortedByStrength = new TreeMap<>();
+        for (ScanResult itemData : resultList) {
+            sortedByStrength.put(itemData.level, itemData);
+        }
+        return new ArrayList<>(sortedByStrength.values());
+    }
+
+    private List<ScanResult> sortBySSID(List<ScanResult> resultList) {
+        Map<String, ScanResult> sortedBySSID = new TreeMap<>();
+        for (ScanResult itemData : resultList) {
+            sortedBySSID.put(itemData.SSID, itemData);
+        }
+        return new ArrayList<>(sortedBySSID.values());
+    }
+
+    private List<ScanResult> sortByChannel(List<ScanResult> resultList) {
+        Map<Integer, ScanResult> sortedByChannel = new TreeMap<>();
+        for (ScanResult itemData : resultList) {
+            int[] frequencies = Utils.getFrequencies(itemData);
+            if (frequencies.length == 1) {
+                sortedByChannel.put(Utils.getChannel(frequencies[0]), itemData);
+            }
+        }
+        return new ArrayList<>(sortedByChannel.values());
     }
 }

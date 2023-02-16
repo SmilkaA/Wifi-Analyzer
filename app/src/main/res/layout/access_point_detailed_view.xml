@@ -69,7 +69,8 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:layout_gravity="center_vertical"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/wiFiStandardImage_in_detailed"

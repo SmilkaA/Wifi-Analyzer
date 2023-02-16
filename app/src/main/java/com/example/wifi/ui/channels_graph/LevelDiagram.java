@@ -156,7 +156,7 @@ public abstract class LevelDiagram extends View {
         drawXAxisLabelsAndLines(canvas);
 
         float maxLevelHeight = innerRect.bottom - innerRect.top;
-        int yLabelsMax = 7;
+        int yLabelsMax = 10;
         float offsetY = maxLevelHeight / (float) yLabelsMax;
         float startY = innerRect.bottom - offsetY;
         for (int i = 0; i < yLabelsMax - 1; i++) {

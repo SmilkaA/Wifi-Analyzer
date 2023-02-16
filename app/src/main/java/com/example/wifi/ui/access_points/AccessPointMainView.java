@@ -21,7 +21,7 @@ public class AccessPointMainView extends LinearLayout {
     private TextView levelView;
     private TextView channelView;
     private TextView primaryFrequencyView;
-    private ImageView securityImageView;
+    private ImageView levelImageInMain;
     private TextView distanceView;
     private TextView speedView;
     private TextView IPView;
@@ -36,7 +36,7 @@ public class AccessPointMainView extends LinearLayout {
         levelView = findViewById(R.id.level);
         channelView = findViewById(R.id.channel);
         primaryFrequencyView = findViewById(R.id.primaryFrequency);
-        securityImageView = findViewById(R.id.securityImage);
+        levelImageInMain = findViewById(R.id.levelImage_in_main);
         distanceView = findViewById(R.id.distance);
         speedView = findViewById(R.id.speed);
         IPView = findViewById(R.id.ip_address);
@@ -48,7 +48,7 @@ public class AccessPointMainView extends LinearLayout {
             String levelText = typedArray.getString(R.styleable.AccessPointMainView_levelView);
             String channelText = typedArray.getString(R.styleable.AccessPointMainView_channelView);
             String primaryFrequencyText = typedArray.getString(R.styleable.AccessPointMainView_primaryFrequencyView);
-            Drawable securityImage = typedArray.getDrawable(R.styleable.AccessPointMainView_securityImageView);
+            Drawable levelImage = typedArray.getDrawable(R.styleable.AccessPointMainView_levelImageView);
             String distanceText = typedArray.getString(R.styleable.AccessPointMainView_distanceView);
             String speedText = typedArray.getString(R.styleable.AccessPointMainView_speedView);
             String IPText = typedArray.getString(R.styleable.AccessPointMainView_IPView);
@@ -58,7 +58,7 @@ public class AccessPointMainView extends LinearLayout {
             levelView.setText(levelText);
             channelView.setText(channelText);
             primaryFrequencyView.setText(primaryFrequencyText);
-            securityImageView.setImageDrawable(securityImage);
+            levelImageInMain.setImageDrawable(levelImage);
             distanceView.setText(distanceText);
             speedView.setText(speedText);
             IPView.setText(IPText);
@@ -96,8 +96,12 @@ public class AccessPointMainView extends LinearLayout {
         this.primaryFrequencyView.setText(primaryFrequencyView);
     }
 
-    public void setSecurityImageView(ImageView securityImageView) {
-        this.securityImageView = securityImageView;
+    public void setLevelImageView(Drawable levelImage) {
+        this.levelImageInMain.setImageDrawable(levelImage);
+    }
+
+    public ImageView getLevelImageInMain() {
+        return levelImageInMain;
     }
 
     public void setDistanceView(String distanceView) {
