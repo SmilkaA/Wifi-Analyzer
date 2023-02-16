@@ -6,10 +6,13 @@ import android.view.MenuInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.wifi.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.Locale;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
@@ -19,6 +22,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         bottomNavigationView.setVisibility(View.GONE);
         setHasOptionsMenu(true);
         setPreferencesFromResource(R.xml.settings, rootKey);
+        fillCountriesListPreference();
+        fillLanguagesListPreference();
     }
 
     @Override
@@ -27,5 +32,26 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         for (int i = 0; i < menu.size(); i++) {
             menu.getItem(i).setVisible(false);
         }
+    }
+
+    public void fillCountriesListPreference() {
+        final ListPreference listPreference = (ListPreference) findPreference("country_code_key");
+        String[] countryCodes = Locale.getISOCountries();
+        String[] countries = new String[countryCodes.length];
+        for (int i = 0; i < countryCodes.length; i++) {
+            Locale countryName = new Locale("", countryCodes[i]);
+            countries[i] = countryName.getDisplayCountry();
+        }
+        listPreference.setEntries(countries);
+        listPreference.setDefaultValue("US");
+        listPreference.setEntryValues(countryCodes);
+    }
+
+    private void fillLanguagesListPreference() {
+        final ListPreference listPreference = (ListPreference) findPreference("language_key");
+        String[] languages = new String[]{"English", "Ukrainian"};
+        listPreference.setEntries(languages);
+        listPreference.setDefaultValue("English");
+        listPreference.setEntryValues(languages);
     }
 }

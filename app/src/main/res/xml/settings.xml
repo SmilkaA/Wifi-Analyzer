@@ -107,21 +107,21 @@
     </PreferenceCategory>
 
     <PreferenceCategory>
-        <com.vrem.wifianalyzer.settings.CountryPreference
+        <ListPreference
             app:icon="@drawable/ic_location_on"
-            app:key="@string/country_code_key"
+            app:key="country_code_key"
             app:persistent="true"
             app:summary="@string/country_code_summary"
-            app:useSimpleSummaryProvider="true"
-            app:title="@string/country_code_title" />
+            app:title="@string/country_code_title"
+            app:useSimpleSummaryProvider="true" />
 
-        <com.vrem.wifianalyzer.settings.LanguagePreference
+        <ListPreference
             app:icon="@drawable/ic_language"
-            app:key="@string/language_key"
+            app:key="language_key"
             app:persistent="true"
             app:summary="@string/language_summary"
-            app:useSimpleSummaryProvider="true"
-            app:title="@string/language_title" />
+            app:title="@string/language_title"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <ListPreference />
