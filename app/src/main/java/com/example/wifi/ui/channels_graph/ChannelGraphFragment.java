@@ -2,6 +2,8 @@ package com.example.wifi.ui.channels_graph;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -119,13 +121,18 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
                 return true;
             case R.id.action_filter:
                 mainActivity.openFilterTab();
+                return true;
             case R.id.action_scanner:
                 if (isUpdating) {
+                    mainMenu.getItem(2).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                     updatePeriodically(false);
                     isUpdating = false;
                 } else {
+                    mainMenu.getItem(2).getIcon().clearColorFilter();
                     updatePeriodically(true);
+                    isUpdating = true;
                 }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
