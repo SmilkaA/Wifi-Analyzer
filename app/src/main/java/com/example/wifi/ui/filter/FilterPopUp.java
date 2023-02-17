@@ -350,13 +350,13 @@ public class FilterPopUp extends DialogFragment {
             for (int i = 0; i < resultList.size(); i++) {
                 if (colors.get(filterStrength4) % 2 == 1 && resultList.get(i).level > -35) {
                     results.remove(resultList.get(i));
-                } else if (colors.get(filterStrength3) % 2 == 1 && resultList.get(i).level > -55) {
+                } else if (colors.get(filterStrength3) % 2 == 1 && resultList.get(i).level > -55 && resultList.get(i).level <= -35) {
                     results.remove(resultList.get(i));
-                } else if (colors.get(filterStrength2) % 2 == 1 && resultList.get(i).level > -80) {
+                } else if (colors.get(filterStrength2) % 2 == 1 && resultList.get(i).level > -80 && resultList.get(i).level <= -55) {
                     results.remove(resultList.get(i));
-                } else if (colors.get(filterStrength1) % 2 == 1 && resultList.get(i).level >= -90) {
+                } else if (colors.get(filterStrength1) % 2 == 1 && resultList.get(i).level > -90 && resultList.get(i).level <= -80) {
                     results.remove(resultList.get(i));
-                } else if (colors.get(filterStrength0) % 2 == 1) {
+                } else if (colors.get(filterStrength0) % 2 == 1 && resultList.get(i).level <= -90) {
                     results.remove(resultList.get(i));
                 }
             }
