@@ -61,8 +61,8 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-        maxSignalStrength = sharedPreferences.getString("graph_maximum", "");
-        legendDisplay = sharedPreferences.getString("time_graph_legend", "");
+        maxSignalStrength = sharedPreferences.getString(getString(R.string.graph_maximum_key), "");
+        legendDisplay = sharedPreferences.getString(getString(R.string.time_graph_legend_key), "");
 
         binding = FragmentTimeGraphBinding.inflate(inflater, container, false);
 
@@ -99,8 +99,8 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-        maxSignalStrength = sharedPreferences.getString("graph_maximum", "");
-        legendDisplay = sharedPreferences.getString("time_graph_legend", "");
+        maxSignalStrength = sharedPreferences.getString(getString(R.string.graph_maximum_key), "");
+        legendDisplay = sharedPreferences.getString(getString(R.string.time_graph_legend_key), "");
     }
 
     @Override

@@ -150,8 +150,8 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     }
 
     public void initFromSharedPreferences() {
-        sortingOption = sharedPreferences.getString("sort_by", "");
-        listViewDisplay = sharedPreferences.getString("access_point_display", "");
+        sortingOption = sharedPreferences.getString(getString(R.string.sort_by_ssid), "");
+        listViewDisplay = sharedPreferences.getString(getString(R.string.access_point_display_key), "");
     }
 
     private void updatePeriodically(boolean onPause) {

@@ -108,70 +108,70 @@ public class FilterPopUp extends DialogFragment {
         super.onResume();
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_PATH, Context.MODE_PRIVATE);
-        String SSIDText = sharedPreferences.getString("ssid", "");
+        String SSIDText = sharedPreferences.getString(getString(R.string.filter_ssid_title), "");
         filterSSIDText.setText(SSIDText);
 
-        String wifiBand = sharedPreferences.getString("filterWifiBand2", "");
+        String wifiBand = sharedPreferences.getString(getString(R.string.filterWifiBand2), "");
         if (!wifiBand.equals("")) {
             filterWifiBand2.setTextColor(Integer.parseInt(wifiBand));
         }
-        wifiBand = sharedPreferences.getString("filterWifiBand5", "");
+        wifiBand = sharedPreferences.getString(getString(R.string.filterWifiBand5), "");
         if (!wifiBand.equals("")) {
             filterWifiBand5.setTextColor(Integer.parseInt(wifiBand));
         }
-        wifiBand = sharedPreferences.getString("filterWifiBand6", "");
+        wifiBand = sharedPreferences.getString(getString(R.string.filterWifiBand6), "");
         if (!wifiBand.equals("")) {
             filterWifiBand6.setTextColor(Integer.parseInt(wifiBand));
         }
 
-        String imageS = sharedPreferences.getString("filterStrength0", "");
+        String imageS = sharedPreferences.getString(getString(R.string.filterStrength0), "");
         Bitmap imageB;
         if (!imageS.equals("")) {
             imageB = decodeToBase64(imageS);
             filterStrength0.setImageBitmap(imageB);
         }
-        imageS = sharedPreferences.getString("filterStrength1", "");
+        imageS = sharedPreferences.getString(getString(R.string.filterStrength1), "");
         if (!imageS.equals("")) {
             imageB = decodeToBase64(imageS);
             filterStrength1.setImageBitmap(imageB);
         }
-        imageS = sharedPreferences.getString("filterStrength2", "");
+        imageS = sharedPreferences.getString(getString(R.string.filterStrength2), "");
         if (!imageS.equals("")) {
             imageB = decodeToBase64(imageS);
             filterStrength2.setImageBitmap(imageB);
         }
-        imageS = sharedPreferences.getString("filterStrength3", "");
+        imageS = sharedPreferences.getString(getString(R.string.filterStrength3), "");
         if (!imageS.equals("")) {
             imageB = decodeToBase64(imageS);
             filterStrength3.setImageBitmap(imageB);
         }
-        imageS = sharedPreferences.getString("filterStrength4", "");
+        imageS = sharedPreferences.getString(getString(R.string.filterStrength4), "");
         if (!imageS.equals("")) {
             imageB = decodeToBase64(imageS);
             filterStrength4.setImageBitmap(imageB);
         }
 
-        String wifiSecurity = sharedPreferences.getString("filterSecurityNone", "");
+        String wifiSecurity = sharedPreferences.getString(getString(R.string.filterSecurityNone), "");
         if (!wifiSecurity.equals("")) {
             filterSecurityNone.setTextColor(Integer.parseInt(wifiSecurity));
         }
-        wifiSecurity = sharedPreferences.getString("filterSecurityWPS", "");
+        wifiSecurity = sharedPreferences.getString(getString(R.string.filterSecurityWPS), "");
         if (!wifiSecurity.equals("")) {
             filterSecurityWPS.setTextColor(Integer.parseInt(wifiSecurity));
         }
-        wifiSecurity = sharedPreferences.getString("filterSecurityWEP", "");
+        wifiSecurity = sharedPreferences.getString(getString(R.string.filterSecurityWEP), "");
         if (!wifiSecurity.equals("")) {
             filterSecurityWEP.setTextColor(Integer.parseInt(wifiSecurity));
         }
-        wifiSecurity = sharedPreferences.getString("filterSecurityWPA", "");
+        wifiSecurity = sharedPreferences.getString(getString(R.string.filterSecurityWPA), "");
         if (!wifiSecurity.equals("")) {
             filterSecurityWPA.setTextColor(Integer.parseInt(wifiSecurity));
         }
-        wifiSecurity = sharedPreferences.getString("filterSecurityWPA2", "");
+        wifiSecurity = sharedPreferences.getString(getString(R.string.filterSecurityWPA2), "");
         if (!wifiSecurity.equals("")) {
             filterSecurityWPA2.setTextColor(Integer.parseInt(wifiSecurity));
         }
-        wifiSecurity = sharedPreferences.getString("filterSecurityWPA3", "");
+        wifiSecurity = sharedPreferences.getString(getString(R.string.filterSecurityWPA3), "");
         if (!wifiSecurity.equals("")) {
             filterSecurityWPA3.setTextColor(Integer.parseInt(wifiSecurity));
         }
@@ -255,26 +255,26 @@ public class FilterPopUp extends DialogFragment {
     }
 
     private void addValuesToPreferences(SharedPreferences.Editor editor) {
-        editor.putString("ssid", filterSSIDText.getText().toString());
-        editor.putString("filterWifiBand2", String.valueOf(filterWifiBand2.getCurrentTextColor()));
-        editor.putString("filterWifiBand5", String.valueOf(filterWifiBand5.getCurrentTextColor()));
-        editor.putString("filterWifiBand6", String.valueOf(filterWifiBand6.getCurrentTextColor()));
+        editor.putString(getString(R.string.filter_ssid_title), filterSSIDText.getText().toString());
+        editor.putString(getString(R.string.filterWifiBand2), String.valueOf(filterWifiBand2.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterWifiBand5), String.valueOf(filterWifiBand5.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterWifiBand6), String.valueOf(filterWifiBand6.getCurrentTextColor()));
         filterStrength0.buildDrawingCache();
         filterStrength1.buildDrawingCache();
         filterStrength2.buildDrawingCache();
         filterStrength3.buildDrawingCache();
         filterStrength4.buildDrawingCache();
-        editor.putString("filterStrength0", encodeImageToBase64(filterStrength0.getDrawingCache()));
-        editor.putString("filterStrength1", encodeImageToBase64(filterStrength1.getDrawingCache()));
-        editor.putString("filterStrength2", encodeImageToBase64(filterStrength2.getDrawingCache()));
-        editor.putString("filterStrength3", encodeImageToBase64(filterStrength3.getDrawingCache()));
-        editor.putString("filterStrength4", encodeImageToBase64(filterStrength4.getDrawingCache()));
-        editor.putString("filterSecurityNone", String.valueOf(filterSecurityNone.getCurrentTextColor()));
-        editor.putString("filterSecurityWPS", String.valueOf(filterSecurityWPS.getCurrentTextColor()));
-        editor.putString("filterSecurityWEP", String.valueOf(filterSecurityWEP.getCurrentTextColor()));
-        editor.putString("filterSecurityWPA", String.valueOf(filterSecurityWPA.getCurrentTextColor()));
-        editor.putString("filterSecurityWPA2", String.valueOf(filterSecurityWPA2.getCurrentTextColor()));
-        editor.putString("filterSecurityWPA3", String.valueOf(filterSecurityWPA3.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterStrength0), encodeImageToBase64(filterStrength0.getDrawingCache()));
+        editor.putString(getString(R.string.filterStrength1), encodeImageToBase64(filterStrength1.getDrawingCache()));
+        editor.putString(getString(R.string.filterStrength2), encodeImageToBase64(filterStrength2.getDrawingCache()));
+        editor.putString(getString(R.string.filterStrength3), encodeImageToBase64(filterStrength3.getDrawingCache()));
+        editor.putString(getString(R.string.filterStrength4), encodeImageToBase64(filterStrength4.getDrawingCache()));
+        editor.putString(getString(R.string.filterSecurityNone), String.valueOf(filterSecurityNone.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterSecurityWPS), String.valueOf(filterSecurityWPS.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterSecurityWEP), String.valueOf(filterSecurityWEP.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterSecurityWPA), String.valueOf(filterSecurityWPA.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterSecurityWPA2), String.valueOf(filterSecurityWPA2.getCurrentTextColor()));
+        editor.putString(getString(R.string.filterSecurityWPA3), String.valueOf(filterSecurityWPA3.getCurrentTextColor()));
     }
 
     private static String encodeImageToBase64(Bitmap image) {

@@ -8,7 +8,7 @@
             app:entries="@array/scan_interval_array"
             app:entryValues="@array/scan_interval_array"
             app:icon="@drawable/ic_fast_forward"
-            app:key="scan_interval"
+            app:key="@string/scan_interval_key"
             app:title="@string/scan_interval_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -21,7 +21,7 @@
             app:entries="@array/sort_by_array"
             app:entryValues="@array/sort_by_index_array"
             app:icon="@drawable/ic_sort"
-            app:key="sort_by"
+            app:key="@string/sort_by_key"
             app:title="@string/sort_access_points_by"
             app:useSimpleSummaryProvider="true" />
 
@@ -35,7 +35,7 @@
             app:entries="@array/connection_display_array"
             app:entryValues="@array/connection_display_array"
             app:icon="@drawable/ic_view_carousel"
-            app:key="connection_display"
+            app:key="@string/connection_display_key"
             app:title="@string/connection_display_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -45,7 +45,7 @@
             app:entries="@array/access_point_display_array"
             app:entryValues="@array/access_point_display_array"
             app:icon="@drawable/ic_view_carousel"
-            app:key="access_point_display"
+            app:key="@string/access_point_display_key"
             app:title="@string/access_point_display_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -58,7 +58,7 @@
             app:entries="@array/graph_maximum_array"
             app:entryValues="@array/graph_maximum_array"
             app:icon="@drawable/ic_expand_less"
-            app:key="graph_maximum"
+            app:key="@string/graph_maximum_key"
             app:title="@string/graph_maximum_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -67,7 +67,7 @@
             app:entries="@array/time_graph_legend_array"
             app:entryValues="@array/time_graph_legend_array"
             app:icon="@drawable/ic_show_chart"
-            app:key="time_graph_legend"
+            app:key="@string/time_graph_legend_key"
             app:title="@string/time_graph_legend_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -80,13 +80,13 @@
             app:entries="@array/theme_array"
             app:entryValues="@array/theme_array"
             app:icon="@drawable/ic_color_lens"
-            app:key="theme"
+            app:key="@string/theme_key"
             app:title="@string/theme_title"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
             app:icon="@drawable/ic_brightness_low"
-            app:key="keep_screen_on"
+            app:key="@string/keep_screen_on_key"
             app:title="@string/keep_screen_on_title" />
 
     </PreferenceCategory>
@@ -94,7 +94,7 @@
     <PreferenceCategory>
         <ListPreference
             app:icon="@drawable/ic_location_on"
-            app:key="country_code_key"
+            app:key="@string/country_code_key"
             app:persistent="true"
             app:summary="@string/country_code_summary"
             app:title="@string/country_code_title"
@@ -102,7 +102,7 @@
 
         <ListPreference
             app:icon="@drawable/ic_language"
-            app:key="language_key"
+            app:key="@string/language_key"
             app:persistent="true"
             app:summary="@string/language_summary"
             app:title="@string/language_title"

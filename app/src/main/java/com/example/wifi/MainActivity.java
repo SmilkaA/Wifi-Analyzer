@@ -17,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.format.Formatter;
-import android.view.Menu;
 import android.view.View;
 
 import com.example.wifi.ui.access_points.AccessPointMainView;
@@ -99,9 +98,9 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
 
     public void setTheme() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        theme = sharedPreferences.getString("theme", "");
-        mainAccessPointView = sharedPreferences.getString("connection_display", "");
-        refreshingTimer = sharedPreferences.getString("scan_interval", "5");
+        theme = sharedPreferences.getString(getString(R.string.theme_key), "");
+        mainAccessPointView = sharedPreferences.getString(getString(R.string.connection_display_key), "");
+        refreshingTimer = sharedPreferences.getString(getString(R.string.scan_interval_key), "5");
         switch (theme) {
             case "Dark":
                 setTheme(android.R.style.Theme_Material_NoActionBar);
