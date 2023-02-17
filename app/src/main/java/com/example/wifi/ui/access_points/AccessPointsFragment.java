@@ -75,7 +75,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
                 new AccessPointPopUp(requireActivity(), accessPointAdapter.getItem(0)).show(getChildFragmentManager(), "ok"));
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
-        updateWiFiList();
+        updateWiFiList(mainActivity.getData());
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
 
         return binding.getRoot();
@@ -101,7 +101,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
-        updateWiFiList();
+        updateWiFiList(mainActivity.getScanResultsList());
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -130,7 +130,6 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
                 return true;
             case R.id.action_filter:
                 mainActivity.openFilterTab();
-                updateWiFiList();
             case R.id.action_scanner:
                 if (isUpdating) {
                     updatePeriodically(false);
@@ -160,8 +159,8 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         }
     }
 
-    private void updateWiFiList() {
-        List<ScanResult> scanResults = sortResult(mainActivity.getScanResultsList());
+    private void updateWiFiList(List<ScanResult> data) {
+        List<ScanResult> scanResults = sortResult(data);
         scanResultList.clear();
         scanResultList.addAll(scanResults);
         accessPointAdapter.notifyDataSetChanged();

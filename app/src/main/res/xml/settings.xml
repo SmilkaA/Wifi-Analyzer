@@ -17,7 +17,7 @@
     <PreferenceCategory>
 
         <ListPreference
-            app:defaultValue="0"
+            app:defaultValue="Channel"
             app:entries="@array/sort_by_array"
             app:entryValues="@array/sort_by_index_array"
             app:icon="@drawable/ic_sort"
@@ -76,7 +76,7 @@
     <PreferenceCategory>
 
         <ListPreference
-            app:defaultValue="0"
+            app:defaultValue="System"
             app:entries="@array/theme_array"
             app:entryValues="@array/theme_array"
             app:icon="@drawable/ic_color_lens"

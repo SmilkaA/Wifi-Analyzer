@@ -15,15 +15,12 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 import com.example.wifi.ui.access_points.AccessPointMainView;
-import com.example.wifi.ui.channels_rate.ChannelsRateFragment;
 import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -104,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         theme = sharedPreferences.getString("theme", "");
         mainAccessPointView = sharedPreferences.getString("connection_display", "");
-        refreshingTimer = sharedPreferences.getString("scan_interval", "");
+        refreshingTimer = sharedPreferences.getString("scan_interval", "5");
         switch (theme) {
             case "Dark":
                 setTheme(android.R.style.Theme_Material_NoActionBar);

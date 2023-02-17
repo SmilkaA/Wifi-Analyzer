@@ -354,7 +354,7 @@ public class FilterPopUp extends DialogFragment {
                     results.remove(resultList.get(i));
                 } else if (colors.get(filterStrength2) % 2 == 1 && resultList.get(i).level > -80) {
                     results.remove(resultList.get(i));
-                } else if (colors.get(filterStrength1) % 2 == 1 && resultList.get(i).level > -90) {
+                } else if (colors.get(filterStrength1) % 2 == 1 && resultList.get(i).level >= -90) {
                     results.remove(resultList.get(i));
                 } else if (colors.get(filterStrength0) % 2 == 1) {
                     results.remove(resultList.get(i));
