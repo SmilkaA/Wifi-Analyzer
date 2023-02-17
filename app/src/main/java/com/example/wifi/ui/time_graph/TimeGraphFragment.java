@@ -47,6 +47,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     private SharedPreferences sharedPreferences;
     private String maxSignalStrength;
     private String legendDisplay;
+    private boolean isUpdating = true;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -89,7 +90,9 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onResume() {
-        updatePeriodically();
+        if (isUpdating) {
+            updatePeriodically(true);
+        }
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
@@ -128,6 +131,13 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
                 return true;
             case R.id.action_filter:
                 mainActivity.openFilterTab();
+            case R.id.action_scanner:
+                if (isUpdating) {
+                    updatePeriodically(false);
+                    isUpdating = false;
+                } else {
+                    updatePeriodically(true);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -181,13 +191,15 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         scanCount++;
     }
 
-    private void updatePeriodically() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
-                onRefresh();
-            }
-        }, Utils.MILLISECONDS);
+    private void updatePeriodically(boolean onPause) {
+        if (onPause) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
+                    onRefresh();
+                }
+            }, Utils.MILLISECONDS);
+        }
     }
 }

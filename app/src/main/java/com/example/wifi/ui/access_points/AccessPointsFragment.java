@@ -43,6 +43,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     private SharedPreferences sharedPreferences;
     private String sortingOption;
     private String listViewDisplay;
+    private boolean isUpdating = true;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -88,7 +89,9 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onResume() {
-        updatePeriodically();
+        if (isUpdating) {
+            updatePeriodically(true);
+        }
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
@@ -128,6 +131,13 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
             case R.id.action_filter:
                 mainActivity.openFilterTab();
                 updateWiFiList();
+            case R.id.action_scanner:
+                if (isUpdating) {
+                    updatePeriodically(false);
+                    isUpdating = false;
+                } else {
+                    updatePeriodically(true);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -138,19 +148,20 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         listViewDisplay = sharedPreferences.getString("access_point_display", "");
     }
 
-    private void updatePeriodically() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
-                onRefresh();
-            }
-        }, Utils.MILLISECONDS);
+    private void updatePeriodically(boolean onPause) {
+        if (onPause) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    new Handler().postDelayed(this, Long.parseLong(mainActivity.refreshingTimer) * Utils.MILLISECONDS);
+                    onRefresh();
+                }
+            }, Utils.MILLISECONDS);
+        }
     }
 
     private void updateWiFiList() {
-        List<ScanResult> scanResults = mainActivity.getScanResultsList().isEmpty() ?
-                sortResult(mainActivity.getData()) : sortResult(mainActivity.getScanResultsList());
+        List<ScanResult> scanResults = sortResult(mainActivity.getScanResultsList());
         scanResultList.clear();
         scanResultList.addAll(scanResults);
         accessPointAdapter.notifyDataSetChanged();
@@ -172,8 +183,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     }
 
     private void filterByFrequency(Utils.FrequencyBand frequencyBand) {
-        List<ScanResult> scanResults = mainActivity.getScanResultsList().isEmpty() ?
-                sortResult(mainActivity.getData()) : sortResult(mainActivity.getScanResultsList());
+        List<ScanResult> scanResults = sortResult(mainActivity.getScanResultsList());
         scanResultList.clear();
         for (ScanResult result : scanResults) {
             if (Utils.getFrequencyBand(result) == frequencyBand)

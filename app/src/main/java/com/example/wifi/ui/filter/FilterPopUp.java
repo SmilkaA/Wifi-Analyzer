@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -31,7 +32,7 @@ import java.util.Map;
 
 public class FilterPopUp extends DialogFragment {
 
-    private List<ScanResult> data;
+    private final List<ScanResult> data;
     private Context context;
     private EditText filterSSIDText;
     private TextView filterWifiBand2;
@@ -64,7 +65,7 @@ public class FilterPopUp extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.mainActivity = (MainActivity) getActivity();
         this.mListener = (OnCompleteListener) getActivity();
