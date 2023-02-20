@@ -23,13 +23,13 @@ import java.util.Map;
 
 public class ChannelRateAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<ScanResult> wifiData;
+    private List<ScanResult> wifiData;
     private List<Integer> channelsFrequency;
     private List<Integer> channelsNumbers;
     private Map<Integer, Integer> countedChannels = new HashMap<>();
     private static LayoutInflater inflater = null;
 
-    public ChannelRateAdapter(Context context, ArrayList<ScanResult> data, Map<Integer, Integer> channelsBand) {
+    public ChannelRateAdapter(Context context, List<ScanResult> data, Map<Integer, Integer> channelsBand) {
         this.context = context;
         this.wifiData = data;
         channelsBand = Utils.sortMapByValues(channelsBand);
@@ -45,7 +45,7 @@ public class ChannelRateAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
+    public Integer getItem(int i) {
         return channelsNumbers.get(i);
     }
 

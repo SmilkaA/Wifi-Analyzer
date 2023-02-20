@@ -19,6 +19,7 @@ import java.util.Locale;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     private MainActivity mainActivity;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -44,7 +45,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     public void fillCountriesListPreference() {
-        final ListPreference listPreference = (ListPreference) findPreference("country_code_key");
+        final ListPreference listPreference = findPreference(getString(R.string.country_code_key));
         String[] countryCodes = Locale.getISOCountries();
         String[] countries = new String[countryCodes.length];
         for (int i = 0; i < countryCodes.length; i++) {
@@ -57,7 +58,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void fillLanguagesListPreference() {
-        final ListPreference listPreference = (ListPreference) findPreference("language_key");
+        final ListPreference listPreference = findPreference(getString(R.string.language_key));
         String[] languages = new String[]{"English", "Ukrainian"};
         listPreference.setEntries(languages);
         listPreference.setDefaultValue("English");

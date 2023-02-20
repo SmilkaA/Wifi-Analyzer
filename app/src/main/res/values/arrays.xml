@@ -16,12 +16,6 @@
         <item>@string/sort_by_channel</item>
     </string-array>
 
-    <string-array name="sort_by_index_array">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
     <string-array name="connection_display_array">
         <item>@string/connection_view_complete</item>
         <item>@string/connection_view_compact</item>

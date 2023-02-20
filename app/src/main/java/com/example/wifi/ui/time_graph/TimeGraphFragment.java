@@ -73,6 +73,9 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         accessPointMainView = binding.timeGraphAccessPoint;
         accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+        accessPointMainView.setOnClickListener(view ->
+                new AccessPointPopUp(requireActivity(), mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
+
         scanResultList = mainActivity.getData();
 
         graphView = binding.timeGraphView;
@@ -132,7 +135,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
                 return true;
             case R.id.action_filter:
-                mainActivity.openFilterTab();
+
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {

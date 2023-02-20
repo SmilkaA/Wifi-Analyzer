@@ -1,7 +1,9 @@
 package com.example.wifi.ui.channels_rate;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.wifi.ScanResult;
@@ -17,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -25,6 +29,8 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentChannelRateBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
+import com.example.wifi.ui.access_points.AccessPointPopUp;
+import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -32,6 +38,7 @@ import java.util.List;
 
 public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    private static final int FILTER_FRAGMENT = 1;
     private FragmentChannelRateBinding binding;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AccessPointMainView accessPointMainView;
@@ -39,7 +46,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
     private TextView bestChannels;
     private ListView channelsRatingList;
     private ChannelRateAdapter channelRateAdapter;
-    private ArrayList<ScanResult> scanResultList;
+    private List<ScanResult> scanResultList;
     private Menu mainMenu;
     private boolean isUpdating = true;
 
@@ -125,7 +132,9 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
                 return true;
             case R.id.action_filter:
-                mainActivity.openFilterTab();
+                DialogFragment picker = new FilterPopUp(getContext(), scanResultList);
+                picker.setTargetFragment(this, FILTER_FRAGMENT);
+                picker.show(getFragmentManager().beginTransaction(), getTag());
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
@@ -160,5 +169,16 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         scanResultList.clear();
         scanResultList.addAll(scanResults);
         channelRateAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            scanResultList = data.getParcelableArrayListExtra("key");
+            channelRateAdapter.notifyDataSetChanged();
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            scanResultList = mainActivity.getData();
+            channelRateAdapter.notifyDataSetChanged();
+        }
     }
 }

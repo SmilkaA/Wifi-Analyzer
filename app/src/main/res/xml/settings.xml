@@ -17,9 +17,9 @@
     <PreferenceCategory>
 
         <ListPreference
-            app:defaultValue="Channel"
+            app:defaultValue="@string/sort_by_signal_strength"
             app:entries="@array/sort_by_array"
-            app:entryValues="@array/sort_by_index_array"
+            app:entryValues="@array/sort_by_array"
             app:icon="@drawable/ic_sort"
             app:key="@string/sort_by_key"
             app:title="@string/sort_access_points_by"
@@ -30,7 +30,6 @@
     <PreferenceCategory>
 
         <ListPreference
-            android:defaultValue="@string/connection_view_compact"
             app:defaultValue="@string/connection_view_compact"
             app:entries="@array/connection_display_array"
             app:entryValues="@array/connection_display_array"
@@ -40,7 +39,6 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            android:defaultValue="@string/access_point_view_complete"
             app:defaultValue="@string/access_point_view_complete"
             app:entries="@array/access_point_display_array"
             app:entryValues="@array/access_point_display_array"

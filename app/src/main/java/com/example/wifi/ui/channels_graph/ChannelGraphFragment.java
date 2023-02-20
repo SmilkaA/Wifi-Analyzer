@@ -1,11 +1,14 @@
 package com.example.wifi.ui.channels_graph;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -27,6 +31,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    private static final int FILTER_FRAGMENT = 1;
     private FragmentChannelGraphBinding binding;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AccessPointMainView accessPointMainView;
@@ -35,7 +40,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     private LevelDiagram5GHz levelDiagram5;
     private LevelDiagram6GHz levelDiagram6;
     private Menu mainMenu;
-    private boolean isUpdating =true;
+    private boolean isUpdating = true;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -120,7 +125,6 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
                 return true;
             case R.id.action_filter:
-                mainActivity.openFilterTab();
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
@@ -147,6 +151,18 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
                     onRefresh();
                 }
             }, Utils.MILLISECONDS);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case FILTER_FRAGMENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.d("111", String.valueOf(data.getParcelableArrayListExtra("key")));
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                }
+                break;
         }
     }
 }

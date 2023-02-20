@@ -14,6 +14,7 @@ import java.util.Random;
 public class Utils {
 
     public static final int MILLISECONDS = 1000;
+    public static final String PREFERENCES_PATH = "com.example.wifi.preferences";
 
     public enum FrequencyBand {
         TWO_FOUR_GHZ,

@@ -20,7 +20,6 @@ import android.text.format.Formatter;
 import android.view.View;
 
 import com.example.wifi.ui.access_points.AccessPointMainView;
-import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -39,7 +38,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCompleteListener {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
     private List<ScanResult> scanResultsList;
     private SharedPreferences sharedPreferences;
     private String theme;
-    private String mainAccessPointView;
     public String refreshingTimer;
     private final static String[] permissions = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -67,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
         setSupportActionBar(binding.toolbar);
         initBottomNavigation();
         initDrawerLayout();
+        checkSettings();
     }
 
     private void initBottomNavigation() {
@@ -99,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
     public void setTheme() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         theme = sharedPreferences.getString(getString(R.string.theme_key), "");
-        mainAccessPointView = sharedPreferences.getString(getString(R.string.connection_display_key), "");
         refreshingTimer = sharedPreferences.getString(getString(R.string.scan_interval_key), "5");
         switch (theme) {
             case "Dark":
@@ -144,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
     }
 
     public void checkSettings() {
-        wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         if (!wifi.isWifiEnabled()) {
             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
         }
@@ -175,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
     }
 
     public List<ScanResult> getData() {
-        checkSettings();
+        wifi = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         wifiScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
@@ -195,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
     public void fillCurrentlyConnectedAccessPoint(AccessPointMainView accessPointMainView) {
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
-        List<ScanResult> scanResults = getData();
+        List<ScanResult> scanResults = scanResultsList;
         for (ScanResult result : scanResults) {
             if (info.getSSID().replace("\"", "").equals(result.SSID)) {
                 accessPointMainView.setSsidView(result.SSID + " (" + result.BSSID + ")");
@@ -240,32 +237,13 @@ public class MainActivity extends AppCompatActivity implements FilterPopUp.OnCom
                 break;
             }
         }
-        showMainAccessPoint(accessPointMainView);
-
     }
 
-    public void openFilterTab() {
-        new FilterPopUp(this, getData()).show(getSupportFragmentManager(), "ok");
-    }
-
-    @Override
-    public void onComplete(List<ScanResult> resultList) {
-        setScanResultsList(resultList);
-    }
-
-    public List<ScanResult> getScanResultsList() {
-        return this.scanResultsList;
-    }
-
-    public void setScanResultsList(List<ScanResult> newScanResults) {
-        this.scanResultsList = newScanResults;
-    }
-
-    private void showMainAccessPoint(AccessPointMainView accessPointMainView) {
-        if (mainAccessPointView.equals("Complete")) {
+    public void showMainAccessPoint(String status,AccessPointMainView accessPointMainView) {
+        if (status.equals("Complete")) {
             accessPointMainView.getLevelImageInMain().setVisibility(View.VISIBLE);
             accessPointMainView.setVisibility(View.VISIBLE);
-        } else if (mainAccessPointView.equals("Compact")) {
+        } else if (status.equals("Compact")) {
             accessPointMainView.getLevelImageInMain().setVisibility(View.GONE);
             accessPointMainView.setVisibility(View.VISIBLE);
         } else {

@@ -1,7 +1,9 @@
 package com.example.wifi.ui.filter;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,17 +12,17 @@ import android.graphics.PorterDuff;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
-import com.example.wifi.MainActivity;
 import com.example.wifi.R;
 import com.example.wifi.Utils;
 
@@ -50,13 +52,6 @@ public class FilterPopUp extends DialogFragment {
     private TextView filterSecurityWPA2;
     private TextView filterSecurityWPA3;
     private Map<ImageView, Integer> colors;
-    private final String PREFERENCES_PATH = "com.example.wifi.preferences";
-    private MainActivity mainActivity;
-    private OnCompleteListener mListener;
-
-    public interface OnCompleteListener {
-        void onComplete(List<ScanResult> resultList);
-    }
 
     public FilterPopUp(Context context, List<ScanResult> data) {
         this.context = context;
@@ -65,16 +60,9 @@ public class FilterPopUp extends DialogFragment {
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.mainActivity = (MainActivity) getActivity();
-        this.mListener = (OnCompleteListener) getActivity();
-    }
-
-    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_PATH, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(Utils.PREFERENCES_PATH, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -83,13 +71,13 @@ public class FilterPopUp extends DialogFragment {
         builder.setView(dialogView);
         builder.setMessage("FILTER").setIcon(R.drawable.ic_filter_list)
                 .setPositiveButton("APPLY", (dialog, id) -> {
-                    this.mListener.onComplete(applyFilters(data));
                     addValuesToPreferences(editor);
                     editor.apply();
+                    notifyToTarget(Activity.RESULT_OK);
                 })
                 .setNegativeButton("RESET", (dialogInterface, i) -> {
-                    this.mListener.onComplete(mainActivity.getData());
                     editor.clear().apply();
+                    notifyToTarget(Activity.RESULT_CANCELED);
                 })
                 .setNeutralButton("CLOSE", null);
         return builder.create();
@@ -98,7 +86,7 @@ public class FilterPopUp extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_PATH, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(Utils.PREFERENCES_PATH, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.apply();
     }
@@ -107,7 +95,7 @@ public class FilterPopUp extends DialogFragment {
     public void onResume() {
         super.onResume();
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_PATH, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(Utils.PREFERENCES_PATH, Context.MODE_PRIVATE);
         String SSIDText = sharedPreferences.getString(getString(R.string.filter_ssid_title), "");
         filterSSIDText.setText(SSIDText);
 
@@ -311,71 +299,97 @@ public class FilterPopUp extends DialogFragment {
     }
 
     public List<ScanResult> checkSSID(List<ScanResult> resultList, String SSID) {
-        List<ScanResult> results = resultList;
-        if (!SSID.equals("")) {
-            results = new ArrayList<>();
-            for (ScanResult scanResult : resultList) {
-                if (scanResult.SSID.contains(SSID)) {
-                    results.add(scanResult);
-                }
+        for (int i = 0; i < resultList.size(); i++) {
+            if (!resultList.get(i).SSID.contains(SSID)) {
+                resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                i--;
             }
         }
-        return results;
+        return resultList;
     }
 
     public List<ScanResult> checkWifiBand(List<ScanResult> resultList, TextView textView) {
-        List<ScanResult> results = resultList;
         for (int i = 0; i < resultList.size(); i++) {
             Utils.FrequencyBand fBand = Utils.getFrequencyBand(resultList.get(i));
             if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ
                     && textView.getText().equals(getString(R.string.wifi_band_2ghz))
                     && textView.getCurrentTextColor() == Color.GRAY) {
-                results.remove(resultList.get(i));
+                resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                i--;
             } else if (fBand == Utils.FrequencyBand.FIVE_GHZ
                     && textView.getText().equals(getString(R.string.wifi_band_5ghz))
                     && textView.getCurrentTextColor() == Color.GRAY) {
-                results.remove(resultList.get(i));
+                resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                i--;
             } else if (fBand == Utils.FrequencyBand.SIX_GHZ
                     && textView.getText().equals(getString(R.string.wifi_band_6ghz))
                     && textView.getCurrentTextColor() == Color.GRAY) {
-                results.remove(resultList.get(i));
+                resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                i--;
             }
         }
-        return results;
+        return resultList;
     }
 
     private List<ScanResult> checkSignalStrength(List<ScanResult> resultList) {
-        List<ScanResult> results = resultList;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             for (int i = 0; i < resultList.size(); i++) {
                 if (colors.get(filterStrength4) % 2 == 1 && resultList.get(i).level > -35) {
-                    results.remove(resultList.get(i));
+                    resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                    i--;
                 } else if (colors.get(filterStrength3) % 2 == 1 && resultList.get(i).level > -55 && resultList.get(i).level <= -35) {
-                    results.remove(resultList.get(i));
+                    resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                    i--;
                 } else if (colors.get(filterStrength2) % 2 == 1 && resultList.get(i).level > -80 && resultList.get(i).level <= -55) {
-                    results.remove(resultList.get(i));
+                    resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                    i--;
                 } else if (colors.get(filterStrength1) % 2 == 1 && resultList.get(i).level > -90 && resultList.get(i).level <= -80) {
-                    results.remove(resultList.get(i));
+                    resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                    i--;
                 } else if (colors.get(filterStrength0) % 2 == 1 && resultList.get(i).level <= -90) {
-                    results.remove(resultList.get(i));
+                    resultList.remove(findBySSID(resultList, resultList.get(i).SSID));
+                    i--;
                 }
             }
         }
-        return results;
+        return resultList;
     }
 
     private List<ScanResult> checkSecurity(List<ScanResult> resultList, TextView filterSecurity) {
-        List<ScanResult> results = resultList;
         if (filterSecurity.getCurrentTextColor() == Color.GRAY) {
             for (int i = 0; i < resultList.size(); i++) {
                 if (filterSecurity.getText().equals(filterSecurityNone.getText())
                         && resultList.get(i).capabilities.isEmpty()) {
-                    results.remove(resultList.get(i));
+                    resultList.remove(resultList.get(i));
+                    i--;
+                } else if (resultList.get(i).capabilities.contains("WPA-")) {
+                    resultList.remove(resultList.get(i));
+                    i--;
                 } else if (resultList.get(i).capabilities.contains(filterSecurity.getText())) {
-                    results.remove(resultList.get(i));
+                    resultList.remove(resultList.get(i));
+                    i--;
                 }
             }
         }
-        return results;
+        return resultList;
     }
+
+    private int findBySSID(List<ScanResult> resultList, String ssid) {
+        for (ScanResult scanResult : resultList) {
+            if (scanResult.SSID.equals(ssid)) {
+                return resultList.indexOf(scanResult);
+            }
+        }
+        return -1;
+    }
+
+    private void notifyToTarget(int code) {
+        Fragment targetFragment = getTargetFragment();
+        if (targetFragment != null) {
+            Intent intent = new Intent();
+            intent.putParcelableArrayListExtra("resultList", (ArrayList<? extends Parcelable>) applyFilters(data));
+            targetFragment.onActivityResult(getTargetRequestCode(), code, intent);
+        }
+    }
+
 }
