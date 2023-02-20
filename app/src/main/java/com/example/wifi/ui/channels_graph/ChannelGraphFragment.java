@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -27,12 +28,15 @@ import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentChannelGraphBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.example.wifi.ui.access_points.AccessPointPopUp;
+import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final int FILTER_FRAGMENT = 1;
     private FragmentChannelGraphBinding binding;
+    private List<ScanResult> scanResultList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AccessPointMainView accessPointMainView;
     private MainActivity mainActivity;
@@ -65,19 +69,20 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
         levelDiagram24 = binding.levelDiagram24GHz;
         levelDiagram5 = binding.levelDiagram5GHz;
         levelDiagram6 = binding.levelDiagram6GHz;
-        levelDiagram24.updateDiagram(mainActivity.getData());
+        scanResultList = mainActivity.getData();
+        levelDiagram24.updateDiagram(scanResultList);
 
         return binding.getRoot();
     }
 
     @Override
     public void onResume() {
-        if (isUpdating) {
-            updatePeriodically(true);
-        }
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
+        if (isUpdating) {
+            updatePeriodically(true);
+        }
     }
 
     @Override
@@ -89,6 +94,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
+        updateDiagramsData(scanResultList);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -125,6 +131,9 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
                 return true;
             case R.id.action_filter:
+                DialogFragment dialogFragment = new FilterPopUp(getContext(), scanResultList);
+                dialogFragment.setTargetFragment(this,  Utils.FILTER_FRAGMENT);
+                dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
@@ -157,12 +166,20 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
-            case FILTER_FRAGMENT:
+            case  Utils.FILTER_FRAGMENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.d("111", String.valueOf(data.getParcelableArrayListExtra("key")));
+                    updateDiagramsData(data.getParcelableArrayListExtra("resultList"));
                 } else if (resultCode == Activity.RESULT_CANCELED) {
+                    updateDiagramsData(mainActivity.getData());
+                    mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
                 }
                 break;
         }
+    }
+
+    private void updateDiagramsData(List<ScanResult> results) {
+        levelDiagram24.updateDiagram(results);
+        levelDiagram5.updateDiagram(results);
+        levelDiagram6.updateDiagram(results);
     }
 }

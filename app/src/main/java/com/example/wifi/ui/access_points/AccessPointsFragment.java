@@ -40,7 +40,6 @@ import java.util.TreeMap;
 
 public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final int FILTER_FRAGMENT = 1;
     private FragmentAccessPointsBinding binding;
     private ListView wifiListView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -139,7 +138,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
             case R.id.action_filter:
                 filter = new FilterPopUp(getContext(), scanResultList);
                 DialogFragment dialogFragment = filter;
-                dialogFragment.setTargetFragment(this, FILTER_FRAGMENT);
+                dialogFragment.setTargetFragment(this,  Utils.FILTER_FRAGMENT);
                 dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
                 return true;
             case R.id.action_scanner:
@@ -239,7 +238,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
-            case FILTER_FRAGMENT:
+            case  Utils.FILTER_FRAGMENT:
                 if (resultCode == Activity.RESULT_OK) {
                     updateWiFiList(data.getParcelableArrayListExtra("resultList"));
                 } else if (resultCode == Activity.RESULT_CANCELED) {

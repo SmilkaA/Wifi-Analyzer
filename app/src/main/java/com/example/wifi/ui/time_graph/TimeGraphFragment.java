@@ -1,7 +1,9 @@
 package com.example.wifi.ui.time_graph;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,6 +30,7 @@ import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentTimeGraphBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
 import com.example.wifi.ui.access_points.AccessPointPopUp;
+import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
@@ -60,9 +65,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-        maxSignalStrength = sharedPreferences.getString(getString(R.string.graph_maximum_key), "");
-        legendDisplay = sharedPreferences.getString(getString(R.string.time_graph_legend_key), "");
+        initSharePreferences();
 
         binding = FragmentTimeGraphBinding.inflate(inflater, container, false);
 
@@ -82,7 +85,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         initGraphView();
         series = new ArrayList<>();
 
-        fillGraph();
+        fillGraph(scanResultList);
 
         return binding.getRoot();
     }
@@ -95,23 +98,22 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onResume() {
-        if (isUpdating) {
-            updatePeriodically(true);
-        }
         super.onResume();
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-        maxSignalStrength = sharedPreferences.getString(getString(R.string.graph_maximum_key), "");
-        legendDisplay = sharedPreferences.getString(getString(R.string.time_graph_legend_key), "");
+        initSharePreferences();
+        if (isUpdating) {
+            updatePeriodically(true);
+        }
     }
 
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
-        scanResultList = mainActivity.getData();
+        graphView.getLegendRenderer().resetStyles();
+        initGraphView();
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
-        fillGraph();
+        fillGraph(scanResultList);
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -126,16 +128,18 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_wifi_band_2ghz:
-                mainMenu.getItem(0).setTitle(R.string.wifi_band_2ghz);
+                filterByFrequency(getString(R.string.wifi_band_2ghz), Utils.FrequencyBand.TWO_FOUR_GHZ);
                 return true;
             case R.id.action_wifi_band_5ghz:
-                mainMenu.getItem(0).setTitle(R.string.wifi_band_5ghz);
+                filterByFrequency(getString(R.string.wifi_band_5ghz), Utils.FrequencyBand.FIVE_GHZ);
                 return true;
             case R.id.action_wifi_band_6ghz:
-                mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
+                filterByFrequency(getString(R.string.wifi_band_6ghz), Utils.FrequencyBand.SIX_GHZ);
                 return true;
             case R.id.action_filter:
-
+                DialogFragment dialogFragment = new FilterPopUp(getContext(), scanResultList);
+                dialogFragment.setTargetFragment(this, Utils.FILTER_FRAGMENT);
+                dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
@@ -151,6 +155,12 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void initSharePreferences() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        maxSignalStrength = sharedPreferences.getString(getString(R.string.graph_maximum_key), "");
+        legendDisplay = sharedPreferences.getString(getString(R.string.time_graph_legend_key), "");
     }
 
     public void initGraphView() {
@@ -179,24 +189,24 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         }
     }
 
-    public void fillGraph() {
-        for (ScanResult scanResult : scanResultList) {
+    public void fillGraph(List<ScanResult> results) {
+        for (ScanResult scanResult : results) {
             try {
-                series.get(scanResultList.indexOf(scanResult));
+                series.get(results.indexOf(scanResult));
             } catch (Exception e) {
                 series.add(new LineGraphSeries<>());
             }
-            series.get(scanResultList.indexOf(scanResult)).appendData(
+            series.get(results.indexOf(scanResult)).appendData(
                     new DataPoint(scanCount, scanResult.level), true, scanCount);
-            if (series.get(scanResultList.indexOf(scanResult)).getTitle() == null) {
-                series.get(scanResultList.indexOf(scanResult)).setTitle(scanResult.SSID);
+            if (series.get(results.indexOf(scanResult)).getTitle() == null) {
+                series.get(results.indexOf(scanResult)).setTitle(scanResult.SSID);
             }
 
-            if (!graphView.getSeries().contains(series.get(scanResultList.indexOf(scanResult)))) {
-                graphView.addSeries(series.get(scanResultList.indexOf(scanResult)));
-                series.get(scanResultList.indexOf(scanResult)).setColor(Utils.getRandomColor());
+            if (!graphView.getSeries().contains(series.get(results.indexOf(scanResult)))) {
+                graphView.addSeries(series.get(results.indexOf(scanResult)));
+                series.get(results.indexOf(scanResult)).setColor(Utils.getRandomColor());
             }
-            series.get(scanResultList.indexOf(scanResult)).setOnDataPointTapListener((series, dataPoint) -> new AccessPointPopUp(requireActivity(), scanResult).show(getChildFragmentManager(), "ok"));
+            series.get(results.indexOf(scanResult)).setOnDataPointTapListener((series, dataPoint) -> new AccessPointPopUp(requireActivity(), scanResult).show(getChildFragmentManager(), "ok"));
         }
         scanCount++;
     }
@@ -210,6 +220,34 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
                     onRefresh();
                 }
             }, Utils.MILLISECONDS);
+        }
+    }
+
+    private void filterByFrequency(String title, Utils.FrequencyBand frequencyBand) {
+        mainMenu.getItem(0).setTitle(title);
+        scanResultList.clear();
+        for (ScanResult result : mainActivity.getData()) {
+            if (Utils.getFrequencyBand(result) == frequencyBand)
+                scanResultList.add(result);
+        }
+        graphView.removeAllSeries();
+        fillGraph(scanResultList);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case Utils.FILTER_FRAGMENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    graphView.getLegendRenderer().resetStyles();
+                    initGraphView();
+                    fillGraph(data.getParcelableArrayListExtra("resultList"));
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    graphView.removeAllSeries();
+                    initGraphView();
+                    fillGraph(mainActivity.getData());
+                }
+                break;
         }
     }
 }

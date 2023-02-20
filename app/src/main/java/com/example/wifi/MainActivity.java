@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestScan() {
-        long delay = (long) Math.max(0, Long.parseLong(refreshingTimer) * 1000);
+        long delay = Math.max(0, Long.parseLong(refreshingTimer) * 1000);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
