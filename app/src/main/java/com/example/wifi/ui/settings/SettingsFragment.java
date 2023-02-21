@@ -48,13 +48,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onResume() {
         super.onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        if (getPreferenceManager().getSharedPreferences() != null) {
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        if (getPreferenceManager().getSharedPreferences() != null) {
+            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        }
     }
 
     public void fillCountriesListPreference() {
@@ -66,15 +70,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             countries[i] = countryName.getDisplayCountry();
         }
         listPreference.setEntries(countries);
-        listPreference.setDefaultValue("US");
+        listPreference.setDefaultValue(getString(R.string.country_default_value));
         listPreference.setEntryValues(countryCodes);
     }
 
     private void fillLanguagesListPreference() {
         final ListPreference listPreference = findPreference(getString(R.string.language_key));
-        String[] languages = new String[]{"English", "Ukrainian"};
+        String[] languages = new String[]{getString(R.string.language_english), getString(R.string.language_ukrainian)};
         listPreference.setEntries(languages);
-        listPreference.setDefaultValue("English");
+        listPreference.setDefaultValue(getString(R.string.language_english));
         listPreference.setEntryValues(languages);
     }
 

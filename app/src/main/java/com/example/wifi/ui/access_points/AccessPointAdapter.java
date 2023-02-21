@@ -1,13 +1,7 @@
 package com.example.wifi.ui.access_points;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,28 +9,28 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
-
 import com.example.wifi.R;
 import com.example.wifi.Utils;
-import com.example.wifi.ui.vendors.VendorModel;
-import com.example.wifi.ui.vendors.VendorsAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class AccessPointAdapter extends BaseAdapter {
-    private Context context;
-    private List<ScanResult> data;
+    private final Context context;
+    private final List<ScanResult> data;
     private static LayoutInflater inflater = null;
     private final String listViewDisplay;
 
     public AccessPointAdapter(Context context, List<ScanResult> data, String listViewDisplay) {
         this.context = context;
-        this.data = data;
+        if (data != null) {
+            this.data = data;
+        } else {
+            this.data = new ArrayList<>();
+        }
         this.listViewDisplay = listViewDisplay;
 
-        inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -54,41 +48,26 @@ public class AccessPointAdapter extends BaseAdapter {
         return i;
     }
 
-    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view = convertView;
         if (view == null) {
-            view = inflater.inflate(R.layout.access_point_detailed_view, null);
+            view = inflater.inflate(R.layout.access_point_detailed_view, viewGroup,false);
         }
+        initViewComponent(data.get(i), view);
+        return view;
+    }
 
-        ScanResult itemData = data.get(i);
+    private void initViewComponent(ScanResult itemData, View view) {
         TextView ssidItem = view.findViewById(R.id.ssid_in_detailed);
-        ssidItem.setText(itemData.SSID + " (" + itemData.BSSID + ")");
+        ssidItem.setText(new StringBuilder().append(itemData.SSID).append(" (").append(itemData.BSSID).append(")"));
 
         TextView levelItem = view.findViewById(R.id.level_in_detailed);
         levelItem.setText(context.getString(R.string.level_value, String.valueOf(itemData.level)));
+        Utils.setLevelTextColor(itemData.level, levelItem);
 
         ImageView levelImage = view.findViewById(R.id.levelImage_in_detailed);
-        Drawable picture;
-        if (itemData.level > -35) {
-            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_4_bar", null, context.getPackageName()));
-            levelItem.setTextColor(Color.GREEN);
-        } else if (itemData.level > -55) {
-            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_3_bar", null, context.getPackageName()));
-            levelItem.setTextColor(Color.YELLOW);
-        } else if (itemData.level > -80) {
-            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_2_bar", null, context.getPackageName()));
-            levelItem.setTextColor(Color.YELLOW);
-        } else if (itemData.level > -90) {
-            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_1_bar", null, context.getPackageName()));
-            levelItem.setTextColor(Color.RED);
-        } else {
-            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_0_bar", null, context.getPackageName()));
-            levelItem.setTextColor(Color.RED);
-        }
-        levelImage.setImageDrawable(picture);
+        levelImage.setImageDrawable(Utils.getWifiIcon(context, itemData));
         if (listViewDisplay.equals("Complete")) {
             levelImage.setVisibility(View.VISIBLE);
         }
@@ -97,62 +76,21 @@ public class AccessPointAdapter extends BaseAdapter {
         channelWidthItem.setText(context.getString(R.string.wifi_channel_width, String.valueOf(Utils.getChannelWidth(itemData))));
 
         TextView channelItem = view.findViewById(R.id.channel_in_detailed);
-        String channel = "";
-        int[] frequencies = Utils.getFrequencies(itemData);
-        if (frequencies.length == 1) {
-            channel = String.valueOf(Utils.getChannel(frequencies[0]));
-        } else if (frequencies.length == 2) {
-            channel = Utils.getChannel(frequencies[0]) + "(" + Utils.getChannel(frequencies[1]) + ")";
-        }
-        channelItem.setText(channel);
+        channelItem.setText(Utils.getChannels(itemData));
 
         TextView vendorItem = view.findViewById(R.id.vendorShort_in_detailed);
-        List<VendorModel> vendorList = VendorsAdapter.readFile(context);
-        String macAddress = itemData.BSSID;
-        for (VendorModel vendor : vendorList) {
-            for (String address : vendor.getMacAddresses()) {
-                if (address.contains(macAddress.replace(":", "").substring(0, 6).toUpperCase(Locale.ROOT))) {
-                    vendorItem.setText(vendor.getVendorName());
-                }
-            }
-        }
+        vendorItem.setText(Utils.getVendorName(context, itemData));
 
         TextView capabilitiesItem = view.findViewById(R.id.capabilities_in_detailed);
         capabilitiesItem.setText(itemData.capabilities);
 
         TextView frequencyItem = view.findViewById(R.id.primaryFrequency_in_detailed);
+        frequencyItem.setText((context.getString(R.string.wifi_frequency, Utils.getFrequencyItemText(itemData))));
+
         TextView frequencyRangeItem = view.findViewById(R.id.channel_frequency_range_in_detailed);
-        Utils.FrequencyBand fBand = Utils.getFrequencyBand(itemData);
-        String frequencyItemText = "";
-        String frequencyRangeItemText = "";
-        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
-            frequencyItemText = "2.4";
-            int frequency = 2412 + ((Integer.parseInt(channel) - 1) * 5);
-            if (!channel.equals("1")) {
-                frequencyRangeItemText = (frequency - 20) + " - " + (frequency + 20);
-            } else {
-                frequencyRangeItemText = (frequency - 10) + " - " + (frequency + 10);
-            }
-        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ) {
-            frequencyItemText = "5";
-            int frequency = 5000 + (Integer.parseInt(channel) * 5);
-            if (!channel.equals("1")) {
-                frequencyRangeItemText = (frequency - 20) + " - " + (frequency + 20);
-            } else {
-                frequencyRangeItemText = (frequency - 10) + " - " + (frequency + 10);
-            }
-        } else if (fBand == Utils.FrequencyBand.SIX_GHZ) {
-            frequencyItemText = "6";
-            frequencyRangeItemText = 5940 + " - " + 7100;
-        }
-        frequencyItem.setText((context.getString(R.string.wifi_frequency, frequencyItemText)));
-        frequencyRangeItem.setText(frequencyRangeItemText);
+        frequencyRangeItem.setText(Utils.getFrequencyRangeItemText(itemData));
 
         TextView distanceItem = view.findViewById(R.id.distan_in_detailedce);
-        double exp = (27.55 - (20 * Math.log10(Double.parseDouble(frequencyItemText))) + Math.abs(itemData.level)) / 20.0;
-        double distanceM = Math.pow(10.0, exp);
-        distanceItem.setText(context.getString(R.string.wifi_distance, String.valueOf(distanceM / 1000).substring(0, 5)));
-
-        return view;
+        distanceItem.setText(context.getString(R.string.wifi_distance, Utils.getDistanse(itemData)));
     }
 }

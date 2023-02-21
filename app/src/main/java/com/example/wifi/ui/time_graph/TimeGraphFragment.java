@@ -55,6 +55,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     private String legendDisplay;
     private boolean isUpdating = true;
     private String mainAccessPointViewStatus;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -68,6 +69,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         initSharePreferences();
 
         binding = FragmentTimeGraphBinding.inflate(inflater, container, false);
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
 
         swipeRefreshLayout = binding.timeGraphRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -99,8 +101,9 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onResume() {
         super.onResume();
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
-        bottomNavigationView.setVisibility(View.VISIBLE);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        }
         initSharePreferences();
         if (isUpdating) {
             updatePeriodically(true);
@@ -137,7 +140,9 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
             case R.id.action_filter:
                 DialogFragment dialogFragment = new FilterPopUp(getContext(), scanResultList);
                 dialogFragment.setTargetFragment(this, Utils.FILTER_FRAGMENT);
-                dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
+                if (getFragmentManager() != null) {
+                    dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
+                }
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
@@ -235,18 +240,18 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode) {
-            case Utils.FILTER_FRAGMENT:
-                if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == Utils.FILTER_FRAGMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                if(data!=null) {
                     graphView.getLegendRenderer().resetStyles();
                     initGraphView();
-                    fillGraph(data.getParcelableArrayListExtra("resultList"));
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    graphView.removeAllSeries();
-                    initGraphView();
-                    fillGraph(mainActivity.getData());
+                    fillGraph(data.getParcelableArrayListExtra(Utils.INTENT_LIST_KEY));
                 }
-                break;
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                graphView.removeAllSeries();
+                initGraphView();
+                fillGraph(mainActivity.getData());
+            }
         }
     }
 }

@@ -41,7 +41,6 @@ import java.util.TreeMap;
 public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentAccessPointsBinding binding;
-    private ListView wifiListView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<ScanResult> scanResultList;
     private AccessPointAdapter accessPointAdapter;
@@ -53,7 +52,7 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     private String listViewDisplay;
     private String mainAccessPointViewStatus;
     private boolean isUpdating = true;
-    private FilterPopUp filter;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -69,12 +68,13 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
         initFromSharedPreferences();
 
         binding = FragmentAccessPointsBinding.inflate(inflater, container, false);
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
 
         swipeRefreshLayout = binding.accessPointsRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
         scanResultList = new ArrayList<>();
 
-        wifiListView = binding.accessPointsView;
+        ListView wifiListView = binding.accessPointsView;
         accessPointAdapter = new AccessPointAdapter(requireActivity(), scanResultList, listViewDisplay);
         wifiListView.setAdapter(accessPointAdapter);
         wifiListView.setOnItemClickListener((arg0, arg1, position, arg3) ->
@@ -100,8 +100,9 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onResume() {
         super.onResume();
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
-        bottomNavigationView.setVisibility(View.VISIBLE);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        }
         initFromSharedPreferences();
         if (isUpdating) {
             updatePeriodically(true);
@@ -136,18 +137,19 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
                 filterByFrequency(getString(R.string.wifi_band_6ghz), Utils.FrequencyBand.SIX_GHZ);
                 return true;
             case R.id.action_filter:
-                filter = new FilterPopUp(getContext(), scanResultList);
-                DialogFragment dialogFragment = filter;
-                dialogFragment.setTargetFragment(this,  Utils.FILTER_FRAGMENT);
-                dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
+                DialogFragment dialogFragment = new FilterPopUp(getContext(), scanResultList);
+                dialogFragment.setTargetFragment(this, Utils.FILTER_FRAGMENT);
+                if (getFragmentManager() != null) {
+                    dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
+                }
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
-                    mainMenu.getItem(2).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                    item.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                     updatePeriodically(false);
                     isUpdating = false;
                 } else {
-                    mainMenu.getItem(2).getIcon().clearColorFilter();
+                    item.getIcon().clearColorFilter();
                     updatePeriodically(true);
                     isUpdating = true;
                 }
@@ -237,15 +239,15 @@ public class AccessPointsFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode) {
-            case  Utils.FILTER_FRAGMENT:
-                if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == Utils.FILTER_FRAGMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
                     updateWiFiList(data.getParcelableArrayListExtra("resultList"));
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    updateWiFiList(mainActivity.getData());
-                    mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
                 }
-                break;
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                updateWiFiList(mainActivity.getData());
+                mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+            }
         }
     }
 }

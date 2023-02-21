@@ -1,16 +1,28 @@
 package com.example.wifi;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.ScanResult;
 import android.os.Build;
+import android.widget.TextView;
 
+import com.example.wifi.ui.vendors.VendorModel;
+import com.example.wifi.ui.vendors.VendorsAdapter;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 
 public class Utils {
 
@@ -44,6 +56,24 @@ public class Utils {
 
     public static final int START_6GHZ_BAND = 5940;
     public static final int END_6GHZ_BAND = 7100;
+
+
+    public static final int MIN_FOR_4_SIGNAL_WIFI_LEVEL = -35;
+    public static final int MIN_FOR_3_SIGNAL_WIFI_LEVEL = -55;
+    public static final int MIN_FOR_2_SIGNAL_WIFI_LEVEL = -80;
+    public static final int MIN_FOR_1_SIGNAL_WIFI_LEVEL = -90;
+
+    public static final int CHANNELS_RANGE_INDEX = 20;
+    public static final int FIRST_CHANNEL_RANGE_INDEX = 10;
+
+    public static final double FREQUENCY_24 = 2.4;
+    public static final int FREQUENCY_5 = 5;
+    public static final int FREQUENCY_6 = 6;
+
+    public static final int CHANNELS_MULTIPLIER = 6;
+    public static final int RANDOM_COLOR_BOUND_INDEX = 256;
+
+    public static final String INTENT_LIST_KEY ="resultList";
 
     static {
         Map<Integer, Integer> aMap = new HashMap<>();
@@ -192,6 +222,111 @@ public class Utils {
         }
     }
 
+    public static String getChannels(ScanResult itemData) {
+        StringBuilder channel = new StringBuilder();
+        int[] frequencies = Utils.getFrequencies(itemData);
+        if (frequencies.length == 1) {
+            channel.append(Utils.getChannel(frequencies[0]));
+        } else if (frequencies.length >= 1) {
+            channel.append(Utils.getChannel(frequencies[0])).append("(").append(Utils.getChannel(frequencies[1])).append(")");
+        }
+        return String.valueOf(channel);
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public static Drawable getWifiIcon(Context context, ScanResult itemData) {
+        Drawable picture;
+        if (itemData.level >= MIN_FOR_4_SIGNAL_WIFI_LEVEL) {
+            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_4_bar", null, context.getPackageName()));
+        } else if (itemData.level >= MIN_FOR_3_SIGNAL_WIFI_LEVEL) {
+            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_3_bar", null, context.getPackageName()));
+        } else if (itemData.level >= MIN_FOR_2_SIGNAL_WIFI_LEVEL) {
+            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_2_bar", null, context.getPackageName()));
+        } else if (itemData.level >= MIN_FOR_1_SIGNAL_WIFI_LEVEL) {
+            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_1_bar", null, context.getPackageName()));
+        } else {
+            picture = context.getResources().getDrawable(context.getResources().getIdentifier("@drawable/ic_signal_wifi_0_bar", null, context.getPackageName()));
+        }
+        return picture;
+    }
+
+    public static void setLevelTextColor(int level, TextView levelItem) {
+        if (level > MIN_FOR_4_SIGNAL_WIFI_LEVEL) {
+            levelItem.setTextColor(Color.GREEN);
+        } else if (level > MIN_FOR_3_SIGNAL_WIFI_LEVEL) {
+            levelItem.setTextColor(Color.YELLOW);
+        } else if (level > MIN_FOR_2_SIGNAL_WIFI_LEVEL) {
+            levelItem.setTextColor(Color.YELLOW);
+        } else if (level > MIN_FOR_1_SIGNAL_WIFI_LEVEL) {
+            levelItem.setTextColor(Color.RED);
+        } else {
+            levelItem.setTextColor(Color.RED);
+        }
+    }
+
+    public static String getVendorName(Context context, ScanResult itemData) {
+        List<VendorModel> vendorList = VendorsAdapter.readFile(context);
+        String macAddress = itemData.BSSID;
+        for (VendorModel vendor : vendorList) {
+            for (String address : vendor.getMacAddresses()) {
+                if (address.contains(macAddress.replace(":", "").substring(0, 6).toUpperCase(Locale.ROOT))) {
+                    return vendor.getVendorName();
+                }
+            }
+        }
+        return "";
+    }
+
+    public static String getFrequencyItemText(ScanResult itemData) {
+        String frequencyItemText = "";
+        Utils.FrequencyBand fBand = Utils.getFrequencyBand(itemData);
+        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
+            frequencyItemText = String.valueOf(FREQUENCY_24);
+        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ) {
+            frequencyItemText = String.valueOf(FREQUENCY_5);
+        } else if (fBand == Utils.FrequencyBand.SIX_GHZ) {
+            frequencyItemText = String.valueOf(FREQUENCY_6);
+        }
+        return frequencyItemText;
+    }
+
+    public static String getFrequencyRangeItemText(ScanResult itemData) {
+        String frequencyRangeItemText = "";
+        Utils.FrequencyBand fBand = Utils.getFrequencyBand(itemData);
+
+        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ) {
+            int frequency = START_24GHZ_BAND + ((Integer.parseInt(Utils.getChannels(itemData)) - 1) * 5);
+            if (!Utils.getChannels(itemData).equals("1")) {
+                frequencyRangeItemText = (frequency - CHANNELS_RANGE_INDEX) + " - " + (frequency + CHANNELS_RANGE_INDEX);
+            } else {
+                frequencyRangeItemText = (frequency - FIRST_CHANNEL_RANGE_INDEX) + " - " + (frequency + FIRST_CHANNEL_RANGE_INDEX);
+            }
+        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ) {
+            int frequency = START_5GHZ_BAND + (Integer.parseInt(Utils.getChannels(itemData)) * 5);
+            if (!Utils.getChannels(itemData).equals("1")) {
+                frequencyRangeItemText = (frequency - CHANNELS_RANGE_INDEX) + " - " + (frequency + CHANNELS_RANGE_INDEX);
+            } else {
+                frequencyRangeItemText = (frequency - FIRST_CHANNEL_RANGE_INDEX) + " - " + (frequency + FIRST_CHANNEL_RANGE_INDEX);
+            }
+        } else if (fBand == Utils.FrequencyBand.SIX_GHZ) {
+            frequencyRangeItemText = START_6GHZ_BAND + " - " + END_6GHZ_BAND;
+        }
+        return frequencyRangeItemText;
+    }
+
+    public static String getDistanse(ScanResult itemData) {
+        //distance calculation formula
+        double exp = (27.55 - (CHANNELS_RANGE_INDEX * Math.log10(Double.parseDouble(getFrequencyItemText(itemData)))) + Math.abs(itemData.level)) / 20.0;
+        return String.valueOf(Math.pow(10.0, exp) / 1000).substring(0, 5);
+    }
+
+    public static String getTimestamp(ScanResult itemData) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:mm:ss.SSS", Locale.US);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return simpleDateFormat.format(new Date(itemData.timestamp / 1000));
+    }
+
+
     public static int getChannel(int frequency) {
         if (CHANNELS_24GHZ_BAND.containsKey(frequency)) {
             return CHANNELS_24GHZ_BAND.get(frequency);
@@ -217,6 +352,7 @@ public class Utils {
                 return 80;
             case ScanResult.CHANNEL_WIDTH_160MHZ:
                 return 160;
+            case ScanResult.CHANNEL_WIDTH_20MHZ:
             default:
                 return 20;
         }
@@ -241,9 +377,9 @@ public class Utils {
 
     public static int getRandomColor() {
         Random randomGenerator = new Random();
-        int r = randomGenerator.nextInt(256);
-        int g = randomGenerator.nextInt(256);
-        int b = randomGenerator.nextInt(256);
+        int r = randomGenerator.nextInt(RANDOM_COLOR_BOUND_INDEX);
+        int g = randomGenerator.nextInt(RANDOM_COLOR_BOUND_INDEX);
+        int b = randomGenerator.nextInt(RANDOM_COLOR_BOUND_INDEX);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Color.rgb(r, g, b);
         }

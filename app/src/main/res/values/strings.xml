@@ -110,4 +110,10 @@
     <string name="filter_reset">RESET</string>
     <string name="filer_close">CLOSE</string>
     <string name="filter_title">FILTER</string>
+    <string name="about_text">This app was made by Nastya Smilka :)</string>
+    <string name="export_title">Access points for %1$s</string>
+    <string name="export_type">text/plain</string>
+    <string name="language_english">English</string>
+    <string name="language_ukrainian">Ukrainian</string>
+    <string name="country_default_value">US</string>
 </resources>

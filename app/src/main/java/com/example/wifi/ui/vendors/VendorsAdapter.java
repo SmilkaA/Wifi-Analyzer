@@ -21,14 +21,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class VendorsAdapter extends BaseAdapter {
-    private List<VendorModel> vendorList;
-    private List<VendorModel> vendorListAllData;
-    private Context context;
+    private final List<VendorModel> vendorList;
+    private final List<VendorModel> vendorListAllData;
     private static LayoutInflater inflater = null;
 
-    public VendorsAdapter(Context context, List<VendorModel> vendorList) {
+    public VendorsAdapter(Context context) {
         this.vendorList = readFile(context);
-        this.context = context;
         this.vendorListAllData = readFile(context);
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -53,7 +51,7 @@ public class VendorsAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view = convertView;
         if (view == null) {
-            view = inflater.inflate(R.layout.vendors_list_details, null);
+            view = inflater.inflate(R.layout.vendors_list_details, viewGroup,false);
         }
 
         VendorModel vendor = vendorList.get(i);

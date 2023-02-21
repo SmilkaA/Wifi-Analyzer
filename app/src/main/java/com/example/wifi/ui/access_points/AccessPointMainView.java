@@ -2,7 +2,6 @@ package com.example.wifi.ui.access_points;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -11,18 +10,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.wifi.R;
-
+import com.example.wifi.Utils;
 
 public class AccessPointMainView extends LinearLayout {
 
-    private TextView ssidView;
-    private TextView levelView;
-    private TextView channelView;
-    private TextView primaryFrequencyView;
-    private ImageView levelImageInMain;
-    private TextView distanceView;
-    private TextView speedView;
-    private TextView IPView;
+    private final TextView ssidView;
+    private final TextView levelView;
+    private final TextView channelView;
+    private final TextView primaryFrequencyView;
+    private final ImageView levelImageInMain;
+    private final TextView distanceView;
+    private final TextView speedView;
+    private final TextView IPView;
 
     public AccessPointMainView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -61,7 +60,6 @@ public class AccessPointMainView extends LinearLayout {
         } finally {
             typedArray.recycle();
         }
-
     }
 
     public void setSsidView(String ssidView) {
@@ -70,17 +68,7 @@ public class AccessPointMainView extends LinearLayout {
 
     public void setLevelView(String level) {
         this.levelView.setText(getResources().getString(R.string.level_value, level));
-        if (Integer.parseInt(level) > -35) {
-            this.levelView.setTextColor(Color.GREEN);
-        } else if (Integer.parseInt(level) > -55) {
-            this.levelView.setTextColor(Color.YELLOW);
-        } else if (Integer.parseInt(level) > -80) {
-            this.levelView.setTextColor(Color.YELLOW);
-        } else if (Integer.parseInt(level) > -90) {
-            this.levelView.setTextColor(Color.RED);
-        } else {
-            this.levelView.setTextColor(Color.RED);
-        }
+        Utils.setLevelTextColor(Integer.parseInt(level),this.levelView);
     }
 
     public void setChannelView(String channelView) {

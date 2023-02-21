@@ -26,8 +26,8 @@ import java.time.format.DateTimeFormatter;
 public class ExportFragment extends Fragment {
 
     private FragmentExportBinding binding;
-    private final String title = "Access points for " +
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("d MMM yyyy - HH:mm :"));
+    private final String title = getString(R.string.export_title,
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("d MMM yyyy - HH:mm :")));
     private MainActivity mainActivity;
 
     @Override
@@ -46,7 +46,7 @@ public class ExportFragment extends Fragment {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TITLE, title);
         sendIntent.putExtra(Intent.EXTRA_TEXT, title + getAccessPointData());
-        sendIntent.setType("text/plain");
+        sendIntent.setType(getString(R.string.export_type));
 
         Intent shareIntent = Intent.createChooser(sendIntent, title);
         startActivity(shareIntent);

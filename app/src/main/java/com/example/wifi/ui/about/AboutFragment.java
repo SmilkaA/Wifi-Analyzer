@@ -26,13 +26,10 @@ public class AboutFragment extends Fragment {
         bottomNavigationView.setVisibility(View.GONE);
         setHasOptionsMenu(true);
 
-        AboutViewModel aboutViewModel =
-                new ViewModelProvider(this).get(AboutViewModel.class);
-
         binding = FragmentAboutAppBinding.inflate(inflater, container, false);
 
         final TextView textView = binding.textHome;
-        aboutViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        textView.setText(getText(R.string.about_text));
         return binding.getRoot();
     }
 

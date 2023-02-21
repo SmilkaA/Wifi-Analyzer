@@ -117,30 +117,38 @@ public class AvailableChannelsFragment extends Fragment {
 
     private String getAvailableChannels5(String countryCode) {
         Map<Integer, Integer> channels = new HashMap<>(Utils.CHANNELS_5GHZ_BAND);
-        if (countryCode.equals("AU") || countryCode.equals("CA")) {
-            Log.d("111", String.valueOf(channels.values()));
-            channels.values().remove(120);
-            channels.values().remove(124);
-            channels.values().remove(128);
-        } else if (countryCode.equals("CN") || countryCode.equals("KR")) {
-            channels.values().remove(100);
-            channels.values().remove(104);
-            channels.values().remove(108);
-            channels.values().remove(112);
-            channels.values().remove(116);
-            channels.values().remove(120);
-            channels.values().remove(124);
-            channels.values().remove(128);
-            channels.values().remove(132);
-            channels.values().remove(136);
-            channels.values().remove(140);
-            channels.values().remove(144);
-        } else if (countryCode.equals("JP") || countryCode.equals("TR") || countryCode.equals("ZA")) {
-            channels.values().remove(149);
-            channels.values().remove(153);
-            channels.values().remove(157);
-            channels.values().remove(161);
-            channels.values().remove(165);
+        switch (countryCode) {
+            case "AU":
+            case "CA":
+                Log.d("111", String.valueOf(channels.values()));
+                channels.values().remove(120);
+                channels.values().remove(124);
+                channels.values().remove(128);
+                break;
+            case "CN":
+            case "KR":
+                channels.values().remove(100);
+                channels.values().remove(104);
+                channels.values().remove(108);
+                channels.values().remove(112);
+                channels.values().remove(116);
+                channels.values().remove(120);
+                channels.values().remove(124);
+                channels.values().remove(128);
+                channels.values().remove(132);
+                channels.values().remove(136);
+                channels.values().remove(140);
+                channels.values().remove(144);
+                break;
+            case "JP":
+            case "TR":
+            case "ZA":
+                channels.values().remove(149);
+                channels.values().remove(153);
+                channels.values().remove(157);
+                channels.values().remove(161);
+                channels.values().remove(165);
+                break;
         }
         channels = Utils.sortMapByValues(channels);
         return channels.values().toString().replace('[', ' ').replace(']', ' ');

@@ -48,6 +48,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     private Menu mainMenu;
     private boolean isUpdating = true;
     private String mainAccessPointViewStatus;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -58,6 +59,8 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentChannelGraphBinding.inflate(inflater, container, false);
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+
         setHasOptionsMenu(true);
         initFromSharedPreferences();
 
@@ -83,8 +86,9 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onResume() {
         super.onResume();
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
-        bottomNavigationView.setVisibility(View.VISIBLE);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        }
         if (isUpdating) {
             updatePeriodically(true);
         }
@@ -138,15 +142,17 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
             case R.id.action_filter:
                 DialogFragment dialogFragment = new FilterPopUp(getContext(), scanResultList);
                 dialogFragment.setTargetFragment(this, Utils.FILTER_FRAGMENT);
-                dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
+                if (getFragmentManager() != null) {
+                    dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
+                }
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
-                    mainMenu.getItem(2).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                    item.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                     updatePeriodically(false);
                     isUpdating = false;
                 } else {
-                    mainMenu.getItem(2).getIcon().clearColorFilter();
+                    item.getIcon().clearColorFilter();
                     updatePeriodically(true);
                     isUpdating = true;
                 }
@@ -175,15 +181,15 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode) {
-            case Utils.FILTER_FRAGMENT:
-                if (resultCode == Activity.RESULT_OK) {
-                    updateDiagramsData(data.getParcelableArrayListExtra("resultList"));
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    updateDiagramsData(mainActivity.getData());
-                    mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+        if (requestCode == Utils.FILTER_FRAGMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    updateDiagramsData(data.getParcelableArrayListExtra(Utils.INTENT_LIST_KEY));
                 }
-                break;
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                updateDiagramsData(mainActivity.getData());
+                mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+            }
         }
     }
 

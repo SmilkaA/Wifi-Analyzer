@@ -18,16 +18,18 @@ import java.util.List;
 import java.util.Map;
 
 public class ChannelRateAdapter extends BaseAdapter {
-    private Context context;
-    private List<ScanResult> wifiData;
-    private List<Integer> channelsFrequency;
-    private List<Integer> channelsNumbers;
-    private Map<Integer, Integer> countedChannels = new HashMap<>();
+    private final List<ScanResult> wifiData;
+    private final List<Integer> channelsFrequency;
+    private final List<Integer> channelsNumbers;
+    private final Map<Integer, Integer> countedChannels = new HashMap<>();
     private static LayoutInflater inflater = null;
 
     public ChannelRateAdapter(Context context, List<ScanResult> data, Map<Integer, Integer> channelsBand) {
-        this.context = context;
-        this.wifiData = data;
+        if (data != null) {
+            this.wifiData = data;
+        } else {
+            this.wifiData = new ArrayList<>();
+        }
         channelsBand = Utils.sortMapByValues(channelsBand);
         this.channelsFrequency = new ArrayList<>(channelsBand.keySet());
         this.channelsNumbers = new ArrayList<>(channelsBand.values());
@@ -54,12 +56,17 @@ public class ChannelRateAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view = convertView;
         if (view == null) {
-            view = inflater.inflate(R.layout.channel_rating_list_details, null);
+            view = inflater.inflate(R.layout.channel_rating_list_details, viewGroup, false);
         }
-
         int channelNumber = channelsNumbers.get(i);
+        initViewComponent(channelNumber, view);
+        return view;
+    }
+
+    private void initViewComponent(int channelNumber, View view) {
         TextView channelNumberItem = view.findViewById(R.id.channelNumber);
         channelNumberItem.setText(String.valueOf(channelNumber));
+
         TextView accessPointCountItem = view.findViewById(R.id.accessPointCount);
         int accessPointCount = 0;
         for (ScanResult wifi : wifiData) {
@@ -68,12 +75,13 @@ public class ChannelRateAdapter extends BaseAdapter {
             }
         }
         accessPointCountItem.setText(String.valueOf(accessPointCount));
+
         RatingBar ratingBarItem = view.findViewById(R.id.channelRating);
         ratingBarItem.setNumStars(wifiData.size());
         ratingBarItem.setStepSize(1F);
         ratingBarItem.setProgress(ratingBarItem.getNumStars() - accessPointCount);
+
         countedChannels.put(channelNumber, accessPointCount);
-        return view;
     }
 
     private boolean wifiAcceptsChannel(ScanResult wifi, int checkChannel) {
@@ -83,34 +91,37 @@ public class ChannelRateAdapter extends BaseAdapter {
         if (frequencies.length == 1) {
             channel = Utils.getChannel(frequencies[0]);
         }
-        int frequencyMin;
-        int frequencyMax;
-        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ && channelsFrequency.size() == 13) {
+        int frequencyMin = Utils.START_24GHZ_BAND - Utils.CHANNELS_RANGE_INDEX;
+        int frequencyMax = Utils.START_24GHZ_BAND + Utils.CHANNELS_RANGE_INDEX;
+        if (fBand == Utils.FrequencyBand.TWO_FOUR_GHZ
+                && channelsFrequency.size() == Utils.CHANNELS_24GHZ_BAND.size()) {
             if (!(channel == 1)) {
-                frequencyMin = 2412 + ((channel - 1) * 5) - 20;
-                frequencyMax = 2412 + ((channel - 1) * 5) + 20;
-            } else {
-                frequencyMin = 2402;
-                frequencyMax = 2422;
+                frequencyMin += ((channel - 1) * Utils.CHANNELS_MULTIPLIER);
+                frequencyMax += ((channel - 1) * Utils.CHANNELS_MULTIPLIER);
             }
-            return (frequencyMin <= channelsFrequency.get(checkChannel - 1)) && (channelsFrequency.get(checkChannel - 1) <= frequencyMax);
-        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ && channelsFrequency.size() == 65) {
+            return (frequencyMin <= channelsFrequency.get(checkChannel - 1))
+                    && (channelsFrequency.get(checkChannel - 1) <= frequencyMax);
+        } else if (fBand == Utils.FrequencyBand.FIVE_GHZ
+                && channelsFrequency.size() == Utils.CHANNELS_5GHZ_BAND.size()) {
             if (!(channel == 1)) {
-                frequencyMin = 5000 + (channel * 5) - 20;
-                frequencyMax = 25000 + (channel * 5) + 20;
+                frequencyMin = Utils.START_5GHZ_BAND + (channel * Utils.CHANNELS_MULTIPLIER)
+                        - Utils.CHANNELS_RANGE_INDEX;
+                frequencyMax = Utils.CHANNELS_MULTIPLIER * Utils.START_5GHZ_BAND
+                        + (channel * Utils.CHANNELS_MULTIPLIER) + Utils.CHANNELS_RANGE_INDEX;
             } else {
-                frequencyMin = 5000 + (channel * 5) - 10;
-                frequencyMax = 25000 + (channel * 5) + 10;
+                frequencyMin = Utils.START_5GHZ_BAND + (channel * Utils.CHANNELS_MULTIPLIER)
+                        - Utils.FIRST_CHANNEL_RANGE_INDEX;
+                frequencyMax = Utils.CHANNELS_MULTIPLIER * Utils.START_5GHZ_BAND
+                        + (channel * Utils.CHANNELS_MULTIPLIER) + Utils.FIRST_CHANNEL_RANGE_INDEX;
             }
             return frequencyMin <= channelsFrequency.get(checkChannel - 1) &&
                     channelsFrequency.get(checkChannel - 1) <= frequencyMax;
         } else if (fBand == Utils.FrequencyBand.SIX_GHZ) {
-            //TODO: find out how to calculate it
-            return false;
+            return (Utils.START_6GHZ_BAND <= channelsFrequency.get(checkChannel - 1))
+                    && (channelsFrequency.get(checkChannel - 1) <= Utils.END_6GHZ_BAND);
         }
         return false;
     }
-
 
     public Map<Integer, Integer> getCountedChannels() {
         return countedChannels;

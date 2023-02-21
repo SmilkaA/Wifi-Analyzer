@@ -1,6 +1,5 @@
 package com.example.wifi.ui.vendors;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,26 +12,14 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.wifi.MainActivity;
 import com.example.wifi.R;
 import com.example.wifi.databinding.FragmentVendorsBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.List;
-
 public class VendorsFragment extends Fragment {
 
     private FragmentVendorsBinding binding;
-    private ListView vendorsListView;
-    private List<VendorModel> vendorList;
     private VendorsAdapter vendorsAdapter;
-    private MainActivity mainActivity;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mainActivity = (MainActivity) requireActivity();
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,8 +28,8 @@ public class VendorsFragment extends Fragment {
         setHasOptionsMenu(true);
         binding = FragmentVendorsBinding.inflate(inflater, container, false);
 
-        vendorsListView = binding.vendorsList;
-        vendorsAdapter = new VendorsAdapter(getActivity(), vendorList);
+        ListView vendorsListView = binding.vendorsList;
+        vendorsAdapter = new VendorsAdapter(getActivity());
         vendorsListView.setAdapter(vendorsAdapter);
 
         binding.vendorSearchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

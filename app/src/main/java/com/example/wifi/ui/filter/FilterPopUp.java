@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -59,6 +60,7 @@ public class FilterPopUp extends DialogFragment {
         this.colors = new HashMap<>();
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -286,14 +288,14 @@ public class FilterPopUp extends DialogFragment {
         resultList = checkWifiBand(resultList, filterWifiBand5);
         resultList = checkWifiBand(resultList, filterWifiBand6);
 
-        resultList = checkSignalStrength(resultList);
+        checkSignalStrength(resultList);
 
-        resultList = checkSecurity(resultList, filterSecurityNone);
-        resultList = checkSecurity(resultList, filterSecurityWEP);
-        resultList = checkSecurity(resultList, filterSecurityWPA);
-        resultList = checkSecurity(resultList, filterSecurityWPA2);
-        resultList = checkSecurity(resultList, filterSecurityWPA3);
-        resultList = checkSecurity(resultList, filterSecurityWPS);
+        checkSecurity(resultList, filterSecurityNone);
+        checkSecurity(resultList, filterSecurityWEP);
+        checkSecurity(resultList, filterSecurityWPA);
+        checkSecurity(resultList, filterSecurityWPA2);
+        checkSecurity(resultList, filterSecurityWPA3);
+        checkSecurity(resultList, filterSecurityWPS);
 
         return resultList;
     }
@@ -387,7 +389,7 @@ public class FilterPopUp extends DialogFragment {
         Fragment targetFragment = getTargetFragment();
         if (targetFragment != null) {
             Intent intent = new Intent();
-            intent.putParcelableArrayListExtra("resultList", (ArrayList<? extends Parcelable>) applyFilters(data));
+            intent.putParcelableArrayListExtra(Utils.INTENT_LIST_KEY, (ArrayList<? extends Parcelable>) applyFilters(data));
             targetFragment.onActivityResult(getTargetRequestCode(), code, intent);
         }
     }

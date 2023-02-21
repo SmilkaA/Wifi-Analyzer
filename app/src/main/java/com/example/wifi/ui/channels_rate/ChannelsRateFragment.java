@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,7 +30,6 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentChannelRateBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
-import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ import java.util.List;
 
 public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final int FILTER_FRAGMENT = 1;
     private FragmentChannelRateBinding binding;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AccessPointMainView accessPointMainView;
@@ -51,6 +48,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
     private Menu mainMenu;
     private boolean isUpdating = true;
     private String mainAccessPointViewStatus;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -64,6 +62,8 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         initFromSharedPreferences();
 
         binding = FragmentChannelRateBinding.inflate(inflater, container, false);
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+
         swipeRefreshLayout = binding.channelRateRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -87,12 +87,13 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onResume() {
+        super.onResume();
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        }
         if (isUpdating) {
             updatePeriodically(true);
         }
-        super.onResume();
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
-        bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -138,7 +139,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
                 return true;
             case R.id.action_scanner:
                 if (isUpdating) {
-                    mainMenu.getItem(2).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                    item.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                     updatePeriodically(false);
                     isUpdating = false;
                 } else {
@@ -179,8 +180,10 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            scanResultList = data.getParcelableArrayListExtra("key");
-            channelRateAdapter.notifyDataSetChanged();
+            if(data!=null) {
+                scanResultList = data.getParcelableArrayListExtra("key");
+                channelRateAdapter.notifyDataSetChanged();
+            }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             scanResultList = mainActivity.getData();
             channelRateAdapter.notifyDataSetChanged();
