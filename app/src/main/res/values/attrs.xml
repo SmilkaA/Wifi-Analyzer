@@ -1,6 +1,5 @@
 <resources>
     <declare-styleable name="AccessPointMainView">
-        <attr name="groupIndicatorView" format="reference" />
         <attr name="securityImageView" format="reference" />
         <attr name="levelImageView" format="reference" />
         <attr name="ssidView" format="string" />

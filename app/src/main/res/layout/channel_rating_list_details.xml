@@ -14,7 +14,6 @@
         android:layout_weight="1"
         android:gravity="center"
         android:progressTint="#64DD17"
-        android:backgroundTint="#343932"
         android:stepSize="1.0" />
 
     <TextView

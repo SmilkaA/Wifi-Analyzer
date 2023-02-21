@@ -30,11 +30,10 @@ public class AboutFragment extends Fragment {
                 new ViewModelProvider(this).get(AboutViewModel.class);
 
         binding = FragmentAboutAppBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         final TextView textView = binding.textHome;
         aboutViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        return binding.getRoot();
     }
 
     @Override

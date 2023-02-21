@@ -39,6 +39,7 @@ public class AvailableChannelsFragment extends Fragment {
     private MainActivity mainActivity;
     private SharedPreferences sharedPreferences;
     private String countryCode;
+    private String mainAccessPointViewStatus;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -50,8 +51,8 @@ public class AvailableChannelsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setVisibility(View.GONE);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-        countryCode = sharedPreferences.getString(getString(R.string.country_code_key), "");
+        initFromSharedPreferences();
+
         binding = FragmentAvailableChannelsBinding.inflate(inflater, container, false);
         setHasOptionsMenu(true);
 
@@ -68,6 +69,7 @@ public class AvailableChannelsFragment extends Fragment {
         availableChannels5.setText(getAvailableChannels5(countryCode));
         availableChannels6 = binding.availableChannelsList.channelAvailableGhz6;
         availableChannels6.setText(getAvailableChannels6());
+        mainActivity.showMainAccessPoint(mainAccessPointViewStatus, accessPointMainView);
 
         return binding.getRoot();
     }
@@ -90,6 +92,12 @@ public class AvailableChannelsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         countryCode = sharedPreferences.getString(getString(R.string.country_code_key), "");
+    }
+
+    private void initFromSharedPreferences() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        countryCode = sharedPreferences.getString(getString(R.string.country_code_key), "");
+        mainAccessPointViewStatus = sharedPreferences.getString(getString(R.string.connection_display_key), "");
     }
 
     private String getCountryName(String countryCode) {

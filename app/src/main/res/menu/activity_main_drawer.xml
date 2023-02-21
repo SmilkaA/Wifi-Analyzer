@@ -33,10 +33,6 @@
             android:icon="@drawable/ic_list"
             android:title="@string/menu_vendors" />
         <item
-            android:id="@+id/nav_port_authority"
-            android:icon="@drawable/ic_lan"
-            android:title="@string/menu_port_authority" />
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
             android:title="@string/menu_settings" />

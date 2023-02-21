@@ -51,10 +51,10 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     private int scanCount = 1;
     private List<LineGraphSeries<DataPoint>> series;
     private Menu mainMenu;
-    private SharedPreferences sharedPreferences;
     private String maxSignalStrength;
     private String legendDisplay;
     private boolean isUpdating = true;
+    private String mainAccessPointViewStatus;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -69,7 +69,6 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
 
         binding = FragmentTimeGraphBinding.inflate(inflater, container, false);
 
-
         swipeRefreshLayout = binding.timeGraphRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -78,6 +77,7 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
         accessPointMainView.setOnClickListener(view ->
                 new AccessPointPopUp(requireActivity(), mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
+        mainActivity.showMainAccessPoint(mainAccessPointViewStatus, accessPointMainView);
 
         scanResultList = mainActivity.getData();
 
@@ -110,8 +110,6 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
-        graphView.getLegendRenderer().resetStyles();
-        initGraphView();
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
         fillGraph(scanResultList);
         swipeRefreshLayout.setRefreshing(false);
@@ -158,9 +156,10 @@ public class TimeGraphFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     private void initSharePreferences() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
         maxSignalStrength = sharedPreferences.getString(getString(R.string.graph_maximum_key), "");
         legendDisplay = sharedPreferences.getString(getString(R.string.time_graph_legend_key), "");
+        mainAccessPointViewStatus = sharedPreferences.getString(getString(R.string.connection_display_key), "");
     }
 
     public void initGraphView() {

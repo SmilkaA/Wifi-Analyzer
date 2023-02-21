@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.wifi.ScanResult;
@@ -22,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
@@ -29,7 +31,6 @@ import com.example.wifi.R;
 import com.example.wifi.Utils;
 import com.example.wifi.databinding.FragmentChannelRateBinding;
 import com.example.wifi.ui.access_points.AccessPointMainView;
-import com.example.wifi.ui.access_points.AccessPointPopUp;
 import com.example.wifi.ui.filter.FilterPopUp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -49,6 +50,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
     private List<ScanResult> scanResultList;
     private Menu mainMenu;
     private boolean isUpdating = true;
+    private String mainAccessPointViewStatus;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -59,6 +61,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        initFromSharedPreferences();
 
         binding = FragmentChannelRateBinding.inflate(inflater, container, false);
         swipeRefreshLayout = binding.channelRateRefresh;
@@ -67,6 +70,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
         accessPointMainView = binding.channelRateMainAccessPoint;
         accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+        mainActivity.showMainAccessPoint(mainAccessPointViewStatus, accessPointMainView);
 
         bestChannels = binding.bestChannels;
         channelsRatingList = binding.channelRatingList;
@@ -110,6 +114,7 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         mainMenu = menu;
+        mainMenu.getItem(1).setVisible(false);
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -131,11 +136,6 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
                 channelsRatingList.setAdapter(channelRateAdapter);
                 mainMenu.getItem(0).setTitle(R.string.wifi_band_6ghz);
                 return true;
-            case R.id.action_filter:
-                DialogFragment picker = new FilterPopUp(getContext(), scanResultList);
-                picker.setTargetFragment(this, FILTER_FRAGMENT);
-                picker.show(getFragmentManager().beginTransaction(), getTag());
-                return true;
             case R.id.action_scanner:
                 if (isUpdating) {
                     mainMenu.getItem(2).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
@@ -150,6 +150,11 @@ public class ChannelsRateFragment extends Fragment implements SwipeRefreshLayout
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void initFromSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        mainAccessPointViewStatus = sharedPreferences.getString(getString(R.string.connection_display_key), "");
     }
 
     private void updatePeriodically(boolean onPause) {

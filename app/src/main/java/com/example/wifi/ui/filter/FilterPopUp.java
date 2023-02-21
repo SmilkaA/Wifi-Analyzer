@@ -35,7 +35,7 @@ import java.util.Map;
 public class FilterPopUp extends DialogFragment {
 
     private final List<ScanResult> data;
-    private Context context;
+    private final Context context;
     private EditText filterSSIDText;
     private TextView filterWifiBand2;
     private TextView filterWifiBand5;
@@ -69,17 +69,17 @@ public class FilterPopUp extends DialogFragment {
         View dialogView = getLayoutInflater().inflate(R.layout.filter_popup, null);
         initFields(dialogView);
         builder.setView(dialogView);
-        builder.setMessage("FILTER").setIcon(R.drawable.ic_filter_list)
-                .setPositiveButton("APPLY", (dialog, id) -> {
+        builder.setMessage(context.getString(R.string.filter_title)).setIcon(R.drawable.ic_filter_list)
+                .setPositiveButton(R.string.filter_apply, (dialog, id) -> {
                     addValuesToPreferences(editor);
                     editor.apply();
                     notifyToTarget(Activity.RESULT_OK);
                 })
-                .setNegativeButton("RESET", (dialogInterface, i) -> {
+                .setNegativeButton(R.string.filter_reset, (dialogInterface, i) -> {
                     editor.clear().apply();
                     notifyToTarget(Activity.RESULT_CANCELED);
                 })
-                .setNeutralButton("CLOSE", null);
+                .setNeutralButton(R.string.filer_close, null);
         return builder.create();
     }
 

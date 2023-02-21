@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.wifi.ScanResult;
@@ -20,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wifi.MainActivity;
@@ -45,6 +47,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     private LevelDiagram6GHz levelDiagram6;
     private Menu mainMenu;
     private boolean isUpdating = true;
+    private String mainAccessPointViewStatus;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,6 +59,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentChannelGraphBinding.inflate(inflater, container, false);
         setHasOptionsMenu(true);
+        initFromSharedPreferences();
 
         swipeRefreshLayout = binding.channelGraphRefresh;
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -65,6 +69,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
                 new AccessPointPopUp(requireActivity(), mainActivity.getData().get(0)).show(getChildFragmentManager(), "ok"));
         accessPointMainView.setVisibility(View.GONE);
         mainActivity.fillCurrentlyConnectedAccessPoint(accessPointMainView);
+        mainActivity.showMainAccessPoint(mainAccessPointViewStatus, accessPointMainView);
 
         levelDiagram24 = binding.levelDiagram24GHz;
         levelDiagram5 = binding.levelDiagram5GHz;
@@ -132,7 +137,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
                 return true;
             case R.id.action_filter:
                 DialogFragment dialogFragment = new FilterPopUp(getContext(), scanResultList);
-                dialogFragment.setTargetFragment(this,  Utils.FILTER_FRAGMENT);
+                dialogFragment.setTargetFragment(this, Utils.FILTER_FRAGMENT);
                 dialogFragment.show(getFragmentManager().beginTransaction(), getTag());
                 return true;
             case R.id.action_scanner:
@@ -151,6 +156,11 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
         }
     }
 
+    private void initFromSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+        mainAccessPointViewStatus = sharedPreferences.getString(getString(R.string.connection_display_key), "");
+    }
+
     private void updatePeriodically(boolean onPause) {
         if (onPause) {
             new Handler().postDelayed(new Runnable() {
@@ -166,7 +176,7 @@ public class ChannelGraphFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
-            case  Utils.FILTER_FRAGMENT:
+            case Utils.FILTER_FRAGMENT:
                 if (resultCode == Activity.RESULT_OK) {
                     updateDiagramsData(data.getParcelableArrayListExtra("resultList"));
                 } else if (resultCode == Activity.RESULT_CANCELED) {

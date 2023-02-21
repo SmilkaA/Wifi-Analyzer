@@ -1,6 +1,5 @@
 package com.example.wifi;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,12 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private List<ScanResult> scanResultsList;
     private String theme;
     public String refreshingTimer;
-    private final static String[] permissions = new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_WIFI_STATE,
-            Manifest.permission.CHANGE_WIFI_STATE
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setSupportActionBar(binding.toolbar);
+        setSupportActionBar(binding.appBarMain.toolbar);
         initBottomNavigation();
         initDrawerLayout();
         checkSettings();
@@ -86,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_access_points, R.id.nav_channels_rate, R.id.nav_channels_graph,
                 R.id.nav_time_graph, R.id.nav_export, R.id.nav_available_channels,
-                R.id.nav_vendors, R.id.nav_port_authority, R.id.nav_settings, R.id.nav_about_app)
+                R.id.nav_vendors, R.id.nav_settings, R.id.nav_about_app)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -156,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         List<String> permissionsToRequest = new ArrayList<>();
-        for (String p : permissions) {
+        for (String p : Utils.PERMISSIONS) {
             if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
                 permissionsToRequest.add(p);
             }
@@ -202,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     channel = Utils.getChannel(frequencies[0]) + "+" + Utils.getChannel(frequencies[1]);
                 }
                 accessPointMainView.setChannelView(channel);
-                accessPointMainView.setPrimaryFrequencyView(Utils.getChannelWidth(result) + " MHz");
+                accessPointMainView.setPrimaryFrequencyView(getString(R.string.wifi_channel_width, String.valueOf(Utils.getChannelWidth(result))));
                 Drawable picture;
                 if (result.level > -35) {
                     picture = getResources().getDrawable(getResources().getIdentifier("@drawable/ic_signal_wifi_4_bar", null, getPackageName()));
@@ -227,8 +220,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 double exp = (27.55 - (20 * Math.log10(Double.parseDouble(frequencyItemText))) + Math.abs(result.level)) / 20.0;
                 double distanceM = Math.pow(10.0, exp);
-                accessPointMainView.setDistanceView("~" + String.valueOf(distanceM / 1000).substring(0, 5) + "m");
-                accessPointMainView.setSpeedView(info.getLinkSpeed() + "Mbps");
+                accessPointMainView.setDistanceView(getString(R.string.wifi_distance,String.valueOf(distanceM / 1000).substring(0, 5)));
+                accessPointMainView.setSpeedView(getString(R.string.wifi_speed,String.valueOf(info.getLinkSpeed())));
                 accessPointMainView.setIPView(Formatter.formatIpAddress(info.getIpAddress()));
                 accessPointMainView.setVisibility(View.VISIBLE);
                 break;
@@ -237,10 +230,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showMainAccessPoint(String status, AccessPointMainView accessPointMainView) {
-        if (status.equals("Complete")) {
+        if (status.equals(getString(R.string.access_point_view_complete))) {
             accessPointMainView.getLevelImageInMain().setVisibility(View.VISIBLE);
             accessPointMainView.setVisibility(View.VISIBLE);
-        } else if (status.equals("Compact")) {
+        } else if (status.equals(getString(R.string.access_point_view_compact))) {
             accessPointMainView.getLevelImageInMain().setVisibility(View.GONE);
             accessPointMainView.setVisibility(View.VISIBLE);
         } else {

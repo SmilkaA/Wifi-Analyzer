@@ -89,12 +89,12 @@ public class AccessPointAdapter extends BaseAdapter {
             levelItem.setTextColor(Color.RED);
         }
         levelImage.setImageDrawable(picture);
-        if(listViewDisplay.equals("Complete")){
+        if (listViewDisplay.equals("Complete")) {
             levelImage.setVisibility(View.VISIBLE);
         }
 
         TextView channelWidthItem = view.findViewById(R.id.width_in_detailed);
-        channelWidthItem.setText(Utils.getChannelWidth(itemData) + " MHz");
+        channelWidthItem.setText(context.getString(R.string.wifi_channel_width, String.valueOf(Utils.getChannelWidth(itemData))));
 
         TextView channelItem = view.findViewById(R.id.channel_in_detailed);
         String channel = "";
@@ -145,13 +145,13 @@ public class AccessPointAdapter extends BaseAdapter {
             frequencyItemText = "6";
             frequencyRangeItemText = 5940 + " - " + 7100;
         }
-        frequencyItem.setText(frequencyItemText + " GHz");
+        frequencyItem.setText((context.getString(R.string.wifi_frequency, frequencyItemText)));
         frequencyRangeItem.setText(frequencyRangeItemText);
 
         TextView distanceItem = view.findViewById(R.id.distan_in_detailedce);
         double exp = (27.55 - (20 * Math.log10(Double.parseDouble(frequencyItemText))) + Math.abs(itemData.level)) / 20.0;
         double distanceM = Math.pow(10.0, exp);
-        distanceItem.setText("~" + String.valueOf(distanceM / 1000).substring(0, 5) + "m");
+        distanceItem.setText(context.getString(R.string.wifi_distance, String.valueOf(distanceM / 1000).substring(0, 5)));
 
         return view;
     }

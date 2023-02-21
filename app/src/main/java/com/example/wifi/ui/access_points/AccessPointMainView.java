@@ -3,7 +3,6 @@ package com.example.wifi.ui.access_points;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import com.example.wifi.R;
 
 public class AccessPointMainView extends LinearLayout {
 
-    private ImageView groupIndicatorView;
     private TextView ssidView;
     private TextView levelView;
     private TextView channelView;
@@ -31,7 +29,6 @@ public class AccessPointMainView extends LinearLayout {
 
         LayoutInflater.from(context).inflate(R.layout.access_point_main_view, this, true);
 
-        groupIndicatorView = findViewById(R.id.groupIndicator);
         ssidView = findViewById(R.id.ssid);
         levelView = findViewById(R.id.level);
         channelView = findViewById(R.id.channel);
@@ -43,7 +40,6 @@ public class AccessPointMainView extends LinearLayout {
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AccessPointMainView);
         try {
-            Drawable groupIndicatorImage = typedArray.getDrawable(R.styleable.AccessPointMainView_groupIndicatorView);
             String ssidText = typedArray.getString(R.styleable.AccessPointMainView_ssidView);
             String levelText = typedArray.getString(R.styleable.AccessPointMainView_levelView);
             String channelText = typedArray.getString(R.styleable.AccessPointMainView_channelView);
@@ -53,7 +49,6 @@ public class AccessPointMainView extends LinearLayout {
             String speedText = typedArray.getString(R.styleable.AccessPointMainView_speedView);
             String IPText = typedArray.getString(R.styleable.AccessPointMainView_IPView);
 
-            groupIndicatorView.setImageDrawable(groupIndicatorImage);
             ssidView.setText(ssidText);
             levelView.setText(levelText);
             channelView.setText(channelText);

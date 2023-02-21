@@ -1,5 +1,6 @@
 package com.example.wifi;
 
+import android.Manifest;
 import android.graphics.Color;
 import android.net.wifi.ScanResult;
 import android.os.Build;
@@ -16,6 +17,13 @@ public class Utils {
     public static final int MILLISECONDS = 1000;
     public static final int FILTER_FRAGMENT = 1;
     public static final String PREFERENCES_PATH = "com.example.wifi.preferences";
+
+    public static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.CHANGE_WIFI_STATE
+    };
 
     public enum FrequencyBand {
         TWO_FOUR_GHZ,

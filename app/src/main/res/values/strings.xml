@@ -34,8 +34,8 @@
     <string name="connection_view_compact">"Compact"</string>
     <string name="connection_view_hide">"Hide"</string>
     <string name="connection_display_title">Connection Display</string>
-    <string name="access_point_view_complete">"Complete"</string>
-    <string name="access_point_view_compact">"Compact"</string>
+    <string name="access_point_view_complete">Complete</string>
+    <string name="access_point_view_compact">Compact</string>
     <string name="access_point_display_title">Access Point Display</string>
     <string name="graph_maximum_title">Graph Maximum Signal Strength</string>
     <string name="graph_legend_title">Channel Legend Display</string>
@@ -102,4 +102,12 @@
     <string name="filterSecurityWPA">filterSecurityWPA</string>
     <string name="filterSecurityWPA2">filterSecurityWPA2</string>
     <string name="filterSecurityWPA3">filterSecurityWPA3</string>
+    <string name="wifi_speed">%1$s Mbps</string>
+    <string name="wifi_distance">~ %1$s m</string>
+    <string name="wifi_frequency">%1$s GHz</string>
+    <string name="wifi_channel_width">%1$s MHz</string>
+    <string name="filter_apply">APPLY</string>
+    <string name="filter_reset">RESET</string>
+    <string name="filer_close">CLOSE</string>
+    <string name="filter_title">FILTER</string>
 </resources>
