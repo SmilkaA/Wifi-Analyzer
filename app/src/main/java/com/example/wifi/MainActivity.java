@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private WifiManager wifi;
     private BroadcastReceiver wifiScanReceiver;
     private List<ScanResult> scanResultsList;
-    private SharedPreferences sharedPreferences;
     private String theme;
     public String refreshingTimer;
     private final static String[] permissions = new String[]{
@@ -57,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initFromSharedPreferences();
         setTheme();
         super.onCreate(savedInstanceState);
 
@@ -95,16 +95,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(drawerNavigationView, navController);
     }
 
-    public void setTheme() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    public void initFromSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         theme = sharedPreferences.getString(getString(R.string.theme_key), "");
         refreshingTimer = sharedPreferences.getString(getString(R.string.scan_interval_key), "5");
+    }
+
+    private void setTheme() {
         switch (theme) {
             case "Dark":
-                setTheme(android.R.style.Theme_Material_NoActionBar);
+                setTheme(android.R.style.Theme_Wallpaper_NoTitleBar);
                 break;
             case "Light":
-                setTheme(android.R.style.Theme_Material_Light_NoActionBar);
+                setTheme(android.R.style.Theme_Light_NoTitleBar);
                 break;
             case "System":
                 setTheme(android.R.style.Theme_DeviceDefault_NoActionBar);
@@ -117,12 +120,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    @Override
-    protected void onResume() {
-        setTheme();
-        super.onResume();
     }
 
     @Override
@@ -239,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void showMainAccessPoint(String status,AccessPointMainView accessPointMainView) {
+    public void showMainAccessPoint(String status, AccessPointMainView accessPointMainView) {
         if (status.equals("Complete")) {
             accessPointMainView.getLevelImageInMain().setVisibility(View.VISIBLE);
             accessPointMainView.setVisibility(View.VISIBLE);

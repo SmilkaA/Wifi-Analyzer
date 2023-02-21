@@ -1,6 +1,7 @@
 package com.example.wifi.ui.settings;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Locale;
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private MainActivity mainActivity;
 
@@ -44,6 +45,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     public void fillCountriesListPreference() {
         final ListPreference listPreference = findPreference(getString(R.string.country_code_key));
         String[] countryCodes = Locale.getISOCountries();
@@ -63,5 +76,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         listPreference.setEntries(languages);
         listPreference.setDefaultValue("English");
         listPreference.setEntryValues(languages);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.theme_key))) {
+            requireActivity().finish();
+            requireActivity().startActivity(mainActivity.getIntent());
+        }
     }
 }
