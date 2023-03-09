@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="scan_interval_array">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="sort_by_array">
+        <item>@string/sort_by_signal_strength</item>
+        <item>@string/sort_by_ssid</item>
+        <item>@string/sort_by_channel</item>
+    </string-array>
+
+    <string-array name="connection_display_array">
+        <item>@string/connection_view_complete</item>
+        <item>@string/connection_view_compact</item>
+        <item>@string/connection_view_hide</item>
+    </string-array>
+
+    <string-array name="access_point_display_array">
+        <item>@string/access_point_view_complete</item>
+        <item>@string/access_point_view_compact</item>
+    </string-array>
+
+    <string-array name="graph_maximum_array" translatable="false">
+        <item>0dBm</item>
+        <item>-10dBm</item>
+        <item>-20dBm</item>
+        <item>-30dBm</item>
+        <item>-40dBm</item>
+        <item>-50dBm</item>
+    </string-array>
+
+    <string-array name="graph_legend_array" translatable="false">
+        <item>Top</item>
+        <item>Bottom</item>
+        <item>Middle</item>
+        <item>Hide</item>
+    </string-array>
+
+    <string-array name="time_graph_legend_array" translatable="false">
+        <item>Top</item>
+        <item>Bottom</item>
+        <item>Middle</item>
+        <item>Hide</item>
+    </string-array>
+
+    <string-array name="theme_array">
+        <item>@string/theme_dark</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_system</item>
+    </string-array>
+</resources>

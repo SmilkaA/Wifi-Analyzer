@@ -2,6 +2,8 @@ package com.example.wifi.ui.about;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -10,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.wifi.R;
 import com.example.wifi.databinding.FragmentAboutAppBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AboutFragment extends Fragment {
 
@@ -18,20 +22,28 @@ public class AboutFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        AboutViewModel aboutViewModel =
-                new ViewModelProvider(this).get(AboutViewModel.class);
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setVisibility(View.GONE);
+        setHasOptionsMenu(true);
 
         binding = FragmentAboutAppBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         final TextView textView = binding.textHome;
-        aboutViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        textView.setText(getText(R.string.about_text));
+        return binding.getRoot();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        for (int i = 0; i < menu.size(); i++) {
+            menu.getItem(i).setVisible(false);
+        }
     }
 }

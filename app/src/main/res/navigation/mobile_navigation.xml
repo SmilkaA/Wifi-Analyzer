@@ -48,12 +48,6 @@
         tools:layout="@layout/fragment_vendors" />
 
     <fragment
-        android:id="@+id/nav_port_authority"
-        android:name="com.example.wifi.ui.port_authority.PortAuthorityFragment"
-        android:label="@string/menu_port_authority"
-        tools:layout="@layout/fragment_port_authority" />
-
-    <fragment
         android:id="@+id/nav_settings"
         android:name="com.example.wifi.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"

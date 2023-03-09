@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/navigation_access_points"
-        android:icon="@drawable/ic_menu_slideshow"
+        android:icon="@drawable/ic_signal_wifi_3_bar"
         android:title="@string/menu_access_points" />
 
     <item
         android:id="@+id/navigation_channels_rate"
-        android:icon="@drawable/ic_menu_slideshow"
+        android:icon="@drawable/ic_wifi_tethering"
         android:title="@string/menu_channels_rate" />
 
     <item
         android:id="@+id/navigation_channel_graph"
-        android:icon="@drawable/ic_menu_slideshow"
+        android:icon="@drawable/ic_insert_chart"
         android:title="@string/menu_channel_graph" />
 
     <item
         android:id="@+id/navigation_time_graph"
-        android:icon="@drawable/ic_menu_slideshow"
+        android:icon="@drawable/ic_show_chart"
         android:title="@string/menu_time_graph" />
 
 </menu>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <include layout="@layout/access_point_detailed_view" />
+
+    <TextView
+        android:id="@+id/wiFiBand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#36EFFF"
+        android:textStyle="bold"
+        tools:text="2.4 GHz" />
+
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="13:35:45.123" />
+
+    <TextView
+        android:id="@+id/wiFiStandard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Wi-Fi 802.11a/b/g" />
+
+    <TextView
+        android:id="@+id/flag80211mc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="801.01mc"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/capabilitiesLong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        tools:text="[WPA-PSK-CCMP+TKIP][WPA2-PSK-CCMP+TKIP][RSN-PSK+FT/PSK+FT/SAE-CCMP][WPS][ESS]" />
+
+    <TextView
+        android:id="@+id/vendorLong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Very Long Vendor Name1234567890"
+        tools:visibility="visible" />
+</LinearLayout>
